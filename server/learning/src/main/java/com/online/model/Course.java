@@ -10,20 +10,32 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "Account")
-public class Account {
+@Table(name = "Course")
+public class Course {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
+  @Column
   private Long id;
 
-  @Column(name = "name")
+  @Column
   private String name;
 
-  @Column(name = "email")
-  private String email;
+  @Column
+  private Integer duration;
 
-  @Column(name = "password")
-  private String password;
+  @Column
+  private String category;
+
+  @Column
+  private Double rating;
+
+  @Column
+  private Integer capacity;
+
+  @Column
+  private String content;
+
+  @Column
+  private String status;
 
 }

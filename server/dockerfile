@@ -6,11 +6,9 @@ USER root
 ADD packages/apache-maven-3.9.6 /home/apache-maven-3.9.6
 ADD learning /home/learning
 
-RUN /home/apache-maven-3.9.6/bin/mvn clean -f "/home/learning/pom.xml"
-RUN /home/apache-maven-3.9.6/bin/mvn package -f "/home/learning/pom.xml"
-
-RUN cp /home/learning/target/learning.war /opt/jboss/wildfly/standalone/deployments/
-RUN /opt/jboss/wildfly/bin/add-user.sh admin admin --silent
+RUN /home/apache-maven-3.9.6/bin/mvn clean package -f "/home/learning/pom.xml" \
+    && cp /home/learning/target/learning.war /opt/jboss/wildfly/standalone/deployments/ \
+    && /opt/jboss/wildfly/bin/add-user.sh admin admin --silent
 
 EXPOSE 8080
 EXPOSE 9990
