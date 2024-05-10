@@ -55,19 +55,14 @@ public class CourseApi {
     if (courses == null) {
       return Response.serverError().build();
     }
-    if (courses.isEmpty()) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
     return Response.ok(courses).build();
   }
 
   @PUT
   @Path("/update/{id}")
   public Response updateCourse(@PathParam("id") long id, Course course) {
-    String response;
-    try {
-      response = courseRepo.updateCourse(id, course);
-    } catch (Exception e) {
+    String response = courseRepo.updateCourse(id, course);
+    if (response == null) {
       return Response.serverError().build();
     }
     return Response.ok(response).build();
@@ -76,10 +71,8 @@ public class CourseApi {
   @PUT
   @Path("/accept/{id}")
   public Response acceptCourseById(@PathParam("id") long id) {
-    String response;
-    try {
-      response = courseRepo.acceptCourse(id);
-    } catch (Exception e) {
+    String response = courseRepo.acceptCourse(id);
+    if (response == null) {
       return Response.serverError().build();
     }
     return Response.ok(response).build();
@@ -88,10 +81,8 @@ public class CourseApi {
   @PUT
   @Path("/reject/{id}")
   public Response rejectCourseById(@PathParam("id") long id) {
-    String response;
-    try {
-      response = courseRepo.rejectCourse(id);
-    } catch (Exception e) {
+    String response = courseRepo.rejectCourse(id);
+    if (response == null) {
       return Response.serverError().build();
     }
     return Response.ok(response).build();
@@ -100,10 +91,8 @@ public class CourseApi {
   @DELETE
   @Path("/remove/{id}")
   public Response removeCourseById(@PathParam("id") long id) {
-    String response;
-    try {
-      response = courseRepo.removeCourse(id);
-    } catch (Exception e) {
+    String response = courseRepo.removeCourse(id);
+    if (response == null) {
       return Response.serverError().build();
     }
     return Response.ok(response).build();

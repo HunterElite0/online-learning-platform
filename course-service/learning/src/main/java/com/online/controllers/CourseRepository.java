@@ -40,7 +40,7 @@ public class CourseRepository {
     return null;
   }
 
-  public String acceptCourse(long id) throws Exception {
+  public String acceptCourse(long id) {
     Course course = em.find(Course.class, id);
     if (course != null) {
       try {
@@ -49,12 +49,12 @@ public class CourseRepository {
         return "Course accepted successfuly!";
       } catch (Exception e) {
         throw e;
-      } 
+      }
     }
     return "Course not found!";
   }
 
-  public String rejectCourse(long id) throws Exception {
+  public String rejectCourse(long id) {
     Course course = em.find(Course.class, id);
     if (course != null) {
       try {
@@ -68,7 +68,7 @@ public class CourseRepository {
     return "Course not found!";
   }
 
-  public String removeCourse(long id) throws Exception {
+  public String removeCourse(long id) {
     Course course = em.find(Course.class, id);
     if (course != null) {
       try {
@@ -81,7 +81,7 @@ public class CourseRepository {
     return "Course not found!";
   }
 
-  public String updateCourse(long id, Course course) throws Exception {
+  public String updateCourse(long id, Course course) {
     Course obj = em.find(Course.class, id);
     if (obj != null) {
       try {
@@ -93,7 +93,7 @@ public class CourseRepository {
         em.merge(obj);
         return "Course updated successfuly!";
       } catch (Exception e) {
-        throw e;
+        return null;
       }
     }
     return "Course not found!";
