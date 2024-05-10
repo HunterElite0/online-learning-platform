@@ -4,6 +4,7 @@ import com.online.controllers.CourseRepository;
 import com.online.model.Course;
 
 import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -23,6 +24,7 @@ import org.json.*;
 @Path("/course")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@Stateless
 public class CourseApi {
 
   @EJB

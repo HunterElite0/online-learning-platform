@@ -6,3 +6,4 @@ com/online/model/Enrollment.class
 com/online/model/EnrollmentKey.class
 com/online/model/Course.class
 com/online/App.class
+com/online/controllers/EnrollmentRepository.class

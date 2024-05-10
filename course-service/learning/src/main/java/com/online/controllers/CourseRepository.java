@@ -4,12 +4,12 @@ import java.util.List;
 
 import com.online.model.Course;
 
-import jakarta.ejb.Singleton;
+import jakarta.ejb.Stateful;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
-@Singleton
+@Stateful
 public class CourseRepository {
 
   @PersistenceContext(unitName = "AppDB")
@@ -119,9 +119,10 @@ public class CourseRepository {
 
   public List<Course> findCourses(String searchTerm) {
     try {
+      searchTerm = searchTerm.toLowerCase();
       TypedQuery<Course> query = em
           .createQuery(
-              "SELECT c FROM Course c WHERE (c.name = :searchTerm OR c.category = :searchTerm) AND c.status = 'ACCEPTED'",
+              "SELECT c FROM Course c WHERE (LOWER(c.name) LIKE :searchTerm OR LOWER(c.category) LIKE :searchTerm) AND c.status = 'ACCEPTED'",
               Course.class);
       query.setParameter("searchTerm", searchTerm);
       return query.getResultList();
