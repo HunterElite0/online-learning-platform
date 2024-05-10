@@ -26,5 +26,4 @@ replay_pid*
 
 .vscode
 
-server/learning/target
-server/packages/apache-maven-3.9.6
+course-service/learning/target
