@@ -1,14 +1,13 @@
-FROM quay.io/wildfly/wildfly
+FROM maven:3.9.6-eclipse-temurin-17-alpine as build
 
-USER root
+COPY learning /home/learning
 
-# Add the path for the maven binaries
-ADD packages/apache-maven-3.9.6 /home/apache-maven-3.9.6
-ADD learning /home/learning
+RUN mvn clean package -f "/home/learning/pom.xml"
 
-RUN /home/apache-maven-3.9.6/bin/mvn clean package -f "/home/learning/pom.xml" \
-    && cp /home/learning/target/learning.war /opt/jboss/wildfly/standalone/deployments/ \
-    && /opt/jboss/wildfly/bin/add-user.sh admin admin --silent
+FROM quay.io/wildfly/wildfly as deploy
+
+COPY --from=build /home/learning/target/learning.war /opt/jboss/wildfly/standalone/deployments/
+RUN /opt/jboss/wildfly/bin/add-user.sh admin admin --silent
 
 EXPOSE 8080
 EXPOSE 9990
