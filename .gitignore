@@ -27,3 +27,4 @@ replay_pid*
 .vscode
 
 course-service/learning/target
+account-service/database.db
