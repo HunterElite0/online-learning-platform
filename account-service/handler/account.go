@@ -114,3 +114,32 @@ func ChangePassword(id int64, newPassword string) (bool, error) {
 		return true, err
 	}
 }
+
+func UpdateUser(id int64, newUser model.Account) (bool, error) {
+	db := database.DB
+
+	result, err := db.Exec(`
+		UPDATE Account
+		SET username = ?, name = ?, password = ?, email = ?, affiliation = ?, bio = ?, yoe = ?, role = ?
+		WHERE id = ?`,
+		newUser.Username,
+		newUser.Name,
+		newUser.Password,
+		newUser.Email,
+		newUser.Affiliation,
+		newUser.Bio,
+		newUser.YearsOfExperience,
+		newUser.Role,
+		id,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+
+	return rowsAffected > 0, nil
+}

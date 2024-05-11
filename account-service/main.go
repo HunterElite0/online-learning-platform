@@ -26,8 +26,8 @@ func main() {
 		return c.JSON(users)
 	})
 
-	app.Put("/users/:id/Updatepassword", func(c *fiber.Ctx) error {
-		
+	app.Put("/users/:id/ChangePassword", func(c *fiber.Ctx) error {
+
 		userID, err := strconv.ParseInt(c.Params("id"), 10, 64)
 		if err != nil {
 			print(err.Error())
@@ -51,6 +51,8 @@ func main() {
 			return c.Status(fiber.StatusNotFound).SendString("User not found")
 		}
 	})
+
+	//app.Put("/users/:id/UpdateUser", func(c *fiber.Ctx) error
 
 	database.InitDB()
 	var user = model.Account{}
