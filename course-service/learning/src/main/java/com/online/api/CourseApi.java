@@ -15,11 +15,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 import java.util.List;
-
-import org.json.*;
 
 @Path("/course")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -28,12 +24,12 @@ import org.json.*;
 public class CourseApi {
 
   @EJB
-  CourseRepository courseRepo;
+  CourseRepository repository;
 
   @POST
   @Path("/create")
   public Response createCourse(Course course) {
-    Course obj = courseRepo.create(course);
+    Course obj = repository.create(course);
     if (obj == null) {
       return Response.serverError().build();
     }
@@ -43,7 +39,7 @@ public class CourseApi {
   @GET
   @Path("/courses")
   public Response getAllCourses() {
-    List<Course> courses = courseRepo.listAllCourses();
+    List<Course> courses = repository.listAllCourses();
     if (courses == null) {
       return Response.serverError().build();
     }
@@ -53,7 +49,7 @@ public class CourseApi {
   @GET
   @Path("/search/{searchTerm}")
   public Response getCourseByTerm(@PathParam("searchTerm") String searchTerm) {
-    List<Course> courses = courseRepo.findCourses(searchTerm);
+    List<Course> courses = repository.findCourses(searchTerm);
     if (courses == null) {
       return Response.serverError().build();
     }
@@ -63,7 +59,7 @@ public class CourseApi {
   @PUT
   @Path("/update/{id}")
   public Response updateCourse(@PathParam("id") long id, Course course) {
-    String response = courseRepo.updateCourse(id, course);
+    String response = repository.updateCourse(id, course);
     if (response == null) {
       return Response.serverError().build();
     }
@@ -73,7 +69,7 @@ public class CourseApi {
   @PUT
   @Path("/accept/{id}")
   public Response acceptCourseById(@PathParam("id") long id) {
-    String response = courseRepo.acceptCourse(id);
+    String response = repository.acceptCourse(id);
     if (response == null) {
       return Response.serverError().build();
     }
@@ -83,7 +79,7 @@ public class CourseApi {
   @PUT
   @Path("/reject/{id}")
   public Response rejectCourseById(@PathParam("id") long id) {
-    String response = courseRepo.rejectCourse(id);
+    String response = repository.rejectCourse(id);
     if (response == null) {
       return Response.serverError().build();
     }
@@ -93,7 +89,7 @@ public class CourseApi {
   @DELETE
   @Path("/remove/{id}")
   public Response removeCourseById(@PathParam("id") long id) {
-    String response = courseRepo.removeCourse(id);
+    String response = repository.removeCourse(id);
     if (response == null) {
       return Response.serverError().build();
     }

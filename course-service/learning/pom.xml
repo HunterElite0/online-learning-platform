@@ -69,13 +69,6 @@
         <version>2.2.224</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.json/json -->
-    <dependency>
-        <groupId>org.json</groupId>
-        <artifactId>json</artifactId>
-        <version>20240303</version>
-    </dependency>
-
     <!-- https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api -->
     <dependency>
         <groupId>jakarta.validation</groupId>
@@ -89,6 +82,28 @@
         <artifactId>jakarta.annotation-api</artifactId>
         <version>2.1.1</version>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/jakarta.jms/jakarta.jms-api -->
+    <dependency>
+        <groupId>jakarta.jms</groupId>
+        <artifactId>jakarta.jms-api</artifactId>
+        <version>3.1.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/jakarta.inject/jakarta.inject-api -->
+    <dependency>
+        <groupId>jakarta.inject</groupId>
+        <artifactId>jakarta.inject-api</artifactId>
+        <version>2.0.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.17.0</version>
+    </dependency>
+
 
   </dependencies>
 

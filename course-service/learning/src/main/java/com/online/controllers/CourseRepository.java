@@ -48,7 +48,7 @@ public class CourseRepository {
         em.merge(course);
         return "Course accepted successfuly!";
       } catch (Exception e) {
-        throw e;
+        return null;
       }
     }
     return "Course not found!";
@@ -62,7 +62,7 @@ public class CourseRepository {
         em.merge(course);
         return "Course rejected successfuly!";
       } catch (Exception e) {
-        throw e;
+        return null;
       }
     }
     return "Course not found!";
@@ -75,7 +75,7 @@ public class CourseRepository {
         em.remove(course);
         return "Course removed successfully!";
       } catch (Exception e) {
-        throw e;
+        return null;
       }
     }
     return "Course not found!";
@@ -127,7 +127,6 @@ public class CourseRepository {
       query.setParameter("searchTerm", searchTerm);
       return query.getResultList();
     } catch (Exception e) {
-      e.printStackTrace();
       return null;
     }
   }
