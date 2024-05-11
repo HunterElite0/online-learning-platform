@@ -17,20 +17,20 @@ func InitDB() error {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	file.Close()
+	defer file.Close()
 
 	db, err := sql.Open("sqlite3", "database.db")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	defer db.Close()
+	//defer db.Close()
 
 	stmt, err := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS Account (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	username TEXT UNIQUE NOT NULL,
 	name TEXT NOT NULL,
-  password TEXT NOT NULL,
+	password TEXT NOT NULL,
 	email TEXT,
 	affiliation TEXT,
 	bio TEXT,
@@ -43,8 +43,8 @@ func InitDB() error {
 
 	_, err = stmt.Exec()
 
+	DB = db
+
 	return err
 
 }
-
-
