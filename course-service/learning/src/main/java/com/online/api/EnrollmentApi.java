@@ -30,6 +30,8 @@ public class EnrollmentApi {
   public Response acceptEnrollment(@PathParam("id") long id) {
     String response = repository.acceptEnrollment(id);
     if (response != null) {
+      repository.getEnrollmentById(id);
+      
       return Response.ok(response).build();
     }
     return Response.serverError().build();
