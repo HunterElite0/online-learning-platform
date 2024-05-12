@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"account-service/database"
@@ -35,7 +34,7 @@ func GetJwtTokenFromHeader(cookieStr string) (string, error) {
 	}
 
 	if cookies["jwt"] == "" {
-		return "", errors.New("Empty token body")
+		return "", errors.New("empty token body")
 	}
 	return cookies["jwt"], nil
 
@@ -161,11 +160,14 @@ func GetAllUsers(c *fiber.Ctx) error {
 	return c.JSON(accounts)
 }
 
-func GetUserById(id int) (model.Account, error) {
+func GetUserById(c *fiber.Ctx) error {
+
+	id := c.Params("id")
+
 	db := database.DB
 	stmt, err := db.Prepare(`SELECT * FROM Account WHERE id = ?`)
 	if err != nil {
-		// log.Fatal(err.Error())
+		return c.Status(fiber.StatusBadRequest).SendString("Error processing request")
 	}
 	defer stmt.Close()
 
@@ -182,23 +184,31 @@ func GetUserById(id int) (model.Account, error) {
 		&account.Role,
 	)
 	if err != nil {
-		return model.Account{}, err
+		return c.Status(fiber.StatusInternalServerError).SendString("Invalid user id")
 	}
 
-	return account, nil
+	return c.JSON(account)
 }
 
 func ChangePassword(c *fiber.Ctx) error {
 
-	id, err := strconv.ParseInt(c.Params("id"), 10, 64)
+	cookieString := c.Get("Cookie")
+	if cookieString == "" {
+		return c.Status(fiber.StatusForbidden).SendString("Not authorized")
+	}
+
+	token, err := GetJwtTokenFromHeader(cookieString)
+	if err != nil {
+		return c.Status(fiber.StatusForbidden).SendString("Not authorized")
+	}
+
+	payload, err := services.VerifyToken(token)
 	if err != nil {
 		print(err.Error())
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid user id")
 	}
 
-	var newPassword struct {
-		Password string `json:"password"`
-	}
+	var newPassword string
 	if err := c.BodyParser(&newPassword); err != nil {
 		return err
 	}
@@ -206,11 +216,11 @@ func ChangePassword(c *fiber.Ctx) error {
 	db := database.DB
 	stmt, err := db.Prepare("UPDATE Account SET password = ? WHERE id = ?")
 	if err != nil {
-		//log.Fatal(err.Error())
+		return c.Status(fiber.StatusBadRequest).SendString("Error processing request")
 	}
-	result, err := stmt.Exec(newPassword, id)
+	result, err := stmt.Exec(newPassword, payload.ID)
 	if err != nil {
-		//log.Fatal(err)
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid user id")
 	}
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
