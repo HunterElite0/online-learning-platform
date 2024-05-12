@@ -240,8 +240,6 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).SendString("Failed to verify token")
 	}
 
-	fmt.Println(payload)
-
 	var account = model.Account{}
 	err = c.BodyParser(&account)
 	if err != nil {
@@ -251,14 +249,14 @@ func UpdateUser(c *fiber.Ctx) error {
 	db := database.DB
 	stmt, err := db.Prepare(`
 		UPDATE Account
-		SET username = ?, name = ?, email = ?, affiliation = ?, bio = ?, yoe = ?, role = ?
+		SET username = ?, name = ?, email = ?, affiliation = ?, bio = ?, yoe = ?
 		WHERE id = ?`)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Error processing request")
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(account.Username, account.Name, account.Email, account.Affiliation, account.Bio, account.YearsOfExperience, account.Role, 122112)
+	result, err := stmt.Exec(account.Username, account.Name, account.Email, account.Affiliation, account.Bio, account.YearsOfExperience, payload.ID)
 	if err != nil {
 		fmt.Println(err.Error())
 		return c.Status(fiber.StatusInternalServerError).SendString("Error updating account details")
