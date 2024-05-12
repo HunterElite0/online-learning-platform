@@ -7,8 +7,11 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.22 // direct
 )
 
+require golang.org/x/crypto v0.23.0
+
 require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

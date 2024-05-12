@@ -23,7 +23,6 @@ func InitDB() error {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	//defer db.Close()
 
 	stmt, err := db.Prepare(`
 	CREATE TABLE IF NOT EXISTS Account (
@@ -31,7 +30,7 @@ func InitDB() error {
 	username TEXT UNIQUE NOT NULL,
 	name TEXT NOT NULL,
 	password TEXT NOT NULL,
-	email TEXT,
+	email TEXT UNIQUE,
 	affiliation TEXT,
 	bio TEXT,
 	yoe INTEGER,
