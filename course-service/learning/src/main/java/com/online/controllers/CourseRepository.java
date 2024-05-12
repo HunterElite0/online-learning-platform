@@ -134,7 +134,7 @@ public class CourseRepository {
 
   public List<Course> getCoursesByInstructorId(long id) {
     try {
-      TypedQuery<Course> query = em.createQuery("SELECT c FROM Course WHERE instrucctorId = :id", Course.class);
+      TypedQuery<Course> query = em.createQuery("SELECT c FROM Course c WHERE c.instructorId = :id", Course.class);
       query.setParameter("id", id);
       return query.getResultList();
     } catch (Exception e) {
@@ -144,11 +144,12 @@ public class CourseRepository {
 
   public Double getCourseRating(long id) {
     try {
-      TypedQuery<Double> query = em.createQuery("SELECT c.rating FROM Course c WHERE c.courseId = :id",
+      TypedQuery<Double> query = em.createQuery("SELECT c.rating FROM Course c WHERE c.id = :id",
           Double.class);
       query.setParameter("id", id);
       return query.getSingleResult();
     } catch (Exception e) {
+      // e.printStackTrace();
       return -1.0;
     }
   }
@@ -156,7 +157,7 @@ public class CourseRepository {
   public boolean updateCourseRating(long id, double rating) {
     try {
       Course course = em.find(Course.class, id);
-      if (course != null) {
+      if (course != null && course.getStatus().equals("ACCEPTED")) {
         course.setRating(rating);
         em.merge(course);
         return true;
@@ -165,6 +166,17 @@ public class CourseRepository {
     } catch (Exception e) {
       return false;
     }
+  }
+
+  public boolean updateCourseRating(long courseId, double rating, double numberOfRatings) {
+    double avgRating = getCourseRating(courseId);
+    if (avgRating == -1) {
+      return false;
+    }
+    double newRating = (avgRating * (numberOfRatings - 1) + rating) / numberOfRatings;
+
+    boolean res = updateCourseRating(courseId, newRating);
+    return res;
   }
 
 }

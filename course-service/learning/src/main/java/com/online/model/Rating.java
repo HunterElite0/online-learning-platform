@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -29,7 +30,7 @@ public class Rating {
   private long courseId;
 
   @Column
-  @NotEmpty
+  @NotNull
   private Double rating;
 
   @Column
