@@ -13,6 +13,7 @@ func SetupRoutes(app *fiber.App) {
 	account.Get("/users", handler.GetAllUsers)
 	account.Get("/login", handler.Login)
 	account.Put("/update", handler.UpdateUser)
-	account.Get("/user/:id")
+	account.Get("/user/:id", handler.GetUserById)
+	account.Put("/changePass", handler.ChangePassword)
 
 }

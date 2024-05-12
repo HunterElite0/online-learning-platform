@@ -208,9 +208,14 @@ func ChangePassword(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid user id")
 	}
 
-	var newPassword string
-	if err := c.BodyParser(&newPassword); err != nil {
+	var obj map[string]string
+	if err := c.BodyParser(&obj); err != nil {
 		return err
+	}
+
+	newPassword, err := HashPassword(obj["password"])
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).SendString("Error processing request")
 	}
 
 	db := database.DB
