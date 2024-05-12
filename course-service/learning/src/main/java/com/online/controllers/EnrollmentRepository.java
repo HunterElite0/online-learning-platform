@@ -18,8 +18,8 @@ public class EnrollmentRepository {
   public String makeEnrollment(Enrollment enrollment) {
     try {
       Enrollment obj = new Enrollment();
-      obj.setCourseId(enrollment.getCourseId());
-      obj.setStudentId(enrollment.getStudentId());
+      obj.setCourseId(enrollment.getCourseId()); // validation that course with this id exists
+      obj.setStudentId(enrollment.getStudentId()); // From jwt token
       obj.setStatus("PENDING");
       em.persist(obj);
       return "Enrollment request sent!";

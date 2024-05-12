@@ -18,10 +18,10 @@ public class RatingRepository {
   public Rating makeRating(Rating rating) {
     try {
       Rating obj = new Rating();
-      obj.setCourseId(rating.getCourseId());
+      obj.setCourseId(rating.getCourseId()); // validation that course with this id exists
       obj.setRating(rating.getRating());
       obj.setReview(rating.getReview());
-      obj.setStudentId(rating.getStudentId());
+      obj.setStudentId(rating.getStudentId()); // From jwt token
       em.persist(obj);
       return obj;
     } catch (Exception e) {

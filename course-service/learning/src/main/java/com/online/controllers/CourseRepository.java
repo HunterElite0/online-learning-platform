@@ -25,7 +25,7 @@ public class CourseRepository {
       obj.setContent(course.getContent());
       obj.setRating(0.0);
       obj.setStatus("PENDING");
-      obj.setInstructorId(course.getInstructorId());
+      obj.setInstructorId(course.getInstructorId()); // From jwt token
       em.persist(obj);
       return obj;
     } catch (Exception e) {
@@ -154,11 +154,17 @@ public class CourseRepository {
     }
   }
 
-  public boolean updateCourseRating(long id, double rating) {
+  public boolean updateCourseRating(long id, double rating, double numberOfRatings) {
     try {
       Course course = em.find(Course.class, id);
+      double avgRating = getCourseRating(course.getId());
+      double newRating = (avgRating * (numberOfRatings - 1) + rating) / numberOfRatings;
+
+      if (avgRating == -1) {
+        return false;
+      }
       if (course != null && course.getStatus().equals("ACCEPTED")) {
-        course.setRating(rating);
+        course.setRating(newRating);
         em.merge(course);
         return true;
       }
@@ -166,17 +172,6 @@ public class CourseRepository {
     } catch (Exception e) {
       return false;
     }
-  }
-
-  public boolean updateCourseRating(long courseId, double rating, double numberOfRatings) {
-    double avgRating = getCourseRating(courseId);
-    if (avgRating == -1) {
-      return false;
-    }
-    double newRating = (avgRating * (numberOfRatings - 1) + rating) / numberOfRatings;
-
-    boolean res = updateCourseRating(courseId, newRating);
-    return res;
   }
 
 }
