@@ -95,4 +95,14 @@ public class CourseApi {
     }
     return Response.ok(response).build();
   }
+
+  @GET
+  @Path("/courses/{id}")
+  public Response getCoursesByInstructorId(@PathParam("id") long id) {
+    List<Course> result = repository.getCoursesByInstructorId(id);
+    if (result == null) {
+      return Response.serverError().build();
+    }
+    return Response.ok(result).build();
+  }
 }

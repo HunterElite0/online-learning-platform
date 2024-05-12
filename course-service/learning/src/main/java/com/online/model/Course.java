@@ -38,4 +38,7 @@ public class Course {
   @Column
   private String status;
 
+  @Column
+  private Long instructorId;
+
 }

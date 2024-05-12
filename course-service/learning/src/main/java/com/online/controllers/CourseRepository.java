@@ -25,6 +25,7 @@ public class CourseRepository {
       obj.setContent(course.getContent());
       obj.setRating(0.0);
       obj.setStatus("PENDING");
+      obj.setInstructorId(course.getInstructorId());
       em.persist(obj);
       return obj;
     } catch (Exception e) {
@@ -128,6 +129,41 @@ public class CourseRepository {
       return query.getResultList();
     } catch (Exception e) {
       return null;
+    }
+  }
+
+  public List<Course> getCoursesByInstructorId(long id) {
+    try {
+      TypedQuery<Course> query = em.createQuery("SELECT c FROM Course WHERE instrucctorId = :id", Course.class);
+      query.setParameter("id", id);
+      return query.getResultList();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public Double getCourseRating(long id) {
+    try {
+      TypedQuery<Double> query = em.createQuery("SELECT c.rating FROM Course c WHERE c.courseId = :id",
+          Double.class);
+      query.setParameter("id", id);
+      return query.getSingleResult();
+    } catch (Exception e) {
+      return -1.0;
+    }
+  }
+
+  public boolean updateCourseRating(long id, double rating) {
+    try {
+      Course course = em.find(Course.class, id);
+      if (course != null) {
+        course.setRating(rating);
+        em.merge(course);
+        return true;
+      }
+      return false;
+    } catch (Exception e) {
+      return false;
     }
   }
 
