@@ -49,7 +49,7 @@ public class EnrollmentApi {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    if (!claims.getClaimValue("role").equals("instructor".toLowerCase())) {
+    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("instructor")) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
@@ -77,7 +77,7 @@ public class EnrollmentApi {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    if (!claims.getClaimValue("role").equals("instructor".toLowerCase())) {
+    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("instructor")) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
