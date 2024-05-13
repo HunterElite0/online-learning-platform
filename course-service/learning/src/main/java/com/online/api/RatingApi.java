@@ -38,11 +38,13 @@ public class RatingApi {
 
     double numberOfRatings = ratingRepo.getNumberOfRatings(rating.getCourseId());
     if (numberOfRatings == -1) {
-    System.out.println("Error getting number of ratings");
-    return Response.serverError().build();
+      return Response.serverError().build();
     }
-    courseRepo.updateCourseRating(rating.getCourseId(), rating.getRating(),
-    numberOfRatings);
+    boolean updated = courseRepo.updateCourseRating(rating.getCourseId(), rating.getRating(),
+        numberOfRatings);
+    if (!updated) {
+      return Response.serverError().build();
+    }
     return Response.ok("Rating submitted!").build();
   }
 

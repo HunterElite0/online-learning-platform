@@ -1,9 +1,11 @@
 package com.online.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.online.controllers.CourseRepository;
 import com.online.model.Enrollment;
 
 import jakarta.annotation.Resource;
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.jms.JMSContext;
@@ -32,8 +34,14 @@ public class EnrollRequestApi {
   @Resource(lookup = "java:/queue/ENROLLMENTQueue")
   private transient Queue queue;
 
+  @EJB
+  private CourseRepository courseRepo;
+
   @POST
   public Response makeEnrollmentRequest(Enrollment enrollment) {
+    if (courseRepo.findCourseById(enrollment.getCourseId()) == null) {
+      return Response.status(Response.Status.NOT_FOUND).entity("Course not found").build();
+    }
     try {
       ObjectMapper mapper = new ObjectMapper();
       String enrollmentJson = mapper.writeValueAsString(enrollment);

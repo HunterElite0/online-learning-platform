@@ -1,4 +1,4 @@
-/*package com.online.controllers;
+package com.online.controllers;
 
 import com.online.model.Notification;
 import com.online.model.Rating;
@@ -14,9 +14,11 @@ public class NotificationRepository {
     @PersistenceContext(unitName = "AppDB")
     private EntityManager em;
 
+    @EJB
+    CourseRepository courseRepository;
+
     public Notification makeNotification(Notification notification) {
     try {
-        // Need to call other micro service to verfiy id ? or extract it from jwt token ?
         Notification obj = new Notification();
         obj.setStudentId(notification.getStudentId());
         obj.setContent(notification.getContent());
@@ -28,4 +30,4 @@ public class NotificationRepository {
     }
   }
     
-}*/
+}

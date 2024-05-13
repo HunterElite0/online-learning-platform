@@ -3,9 +3,7 @@ package com.online.controllers;
 import java.util.List;
 
 import com.online.model.Enrollment;
-import com.online.controllers.CourseRepository;
 
-import jakarta.ejb.EJB;
 import jakarta.ejb.Stateful;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -17,24 +15,14 @@ public class EnrollmentRepository {
   @PersistenceContext(unitName = "AppDB")
   private EntityManager em;
 
-  @EJB
-  CourseRepository courseRepository;
-
-  //@EJB
-  //NotificationRepository notificationRepository;
-
   public String makeEnrollment(Enrollment enrollment) {
     try {
-      if (courseRepository.findCourseById(enrollment.getCourseId()) != null){
-        Enrollment obj = new Enrollment();
-        obj.setCourseId(enrollment.getCourseId()); // validation that course with this id exists
-        obj.setStudentId(enrollment.getStudentId()); // From jwt token
-        obj.setStatus("PENDING");
-        em.persist(obj);
-        return "Enrollment request sent!";
-      } else {
-        throw new Exception("Course with ID " + enrollment.getCourseId() + " does not exist"); 
-      }
+      Enrollment obj = new Enrollment();
+      obj.setCourseId(enrollment.getCourseId());
+      obj.setStudentId(enrollment.getStudentId()); // From jwt token
+      obj.setStatus("PENDING");
+      em.persist(obj);
+      return "Enrollment request sent!";
     } catch (Exception e) {
       e.printStackTrace();
       return "Enrollment request failed!";
@@ -47,7 +35,8 @@ public class EnrollmentRepository {
       try {
         enrollment.setStatus("ACCEPTED");
         em.merge(enrollment);
-        //notificationRepository.makeNotification(enrollment.getStudentId(), enrollment.getCourseId(), "Course Enrollment Accepted");
+        // notificationRepository.makeNotification(enrollment.getStudentId(),
+        // enrollment.getCourseId(), "Course Enrollment Accepted");
         return "Enrollment accepted successfuly!";
       } catch (Exception e) {
         return null;

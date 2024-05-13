@@ -6,15 +6,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "Notification", uniqueConstraints = {
-    @UniqueConstraint(columnNames = { "studentId" })
-})
+@Table(name = "Notification")
 public class Notification {
 
   @Id
