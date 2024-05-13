@@ -52,16 +52,21 @@ func Login(c *fiber.Ctx) error {
 		Role     string
 	}
 
+	type JwtCookie struct {
+		Name  string `json:"name"`
+		Value string `json:"token"`
+	}
+
 	var request = LoginInput{}
 	err := c.BodyParser(&request)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Failed to parse request")
+		return c.Status(fiber.StatusInternalServerError).JSON("Failed to parse request")
 	}
 
 	db := database.DB
 	stmt, err := db.Prepare(`SELECT id, role, password FROM Account WHERE username = ? OR email = ?`)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error processing request")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error processing request")
 	}
 	defer stmt.Close()
 
@@ -74,25 +79,25 @@ func Login(c *fiber.Ctx) error {
 
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.Status(fiber.StatusInternalServerError).SendString("User not found")
+		return c.Status(fiber.StatusInternalServerError).JSON("User not found")
 	}
 
 	passValid := CheckPasswordHash(request.Password, account.Password)
 	if !passValid {
-		return c.SendString("Invalid password or username")
+		return c.Status(fiber.StatusForbidden).JSON("Invalid password or username")
 	}
 
 	token, err := services.NewAccessToken(account.ID, account.Role)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error creating access token")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error creating access token")
 	}
 
-	cookie := new(fiber.Cookie)
-	cookie.Name = "jwt"
-	cookie.Value = token
-	c.Cookie(cookie)
+	cookie := JwtCookie{
+		Name:  "jwt",
+		Value: token,
+	}
 
-	return c.SendString("Successfully logged in!")
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"cookie": cookie})
 }
 
 func AddUser(c *fiber.Ctx) error {
@@ -100,40 +105,45 @@ func AddUser(c *fiber.Ctx) error {
 	var account = model.Account{}
 	err := c.BodyParser(&account)
 	if err != nil {
-		return c.SendString("Error parsing account")
+		return c.JSON("Error parsing account")
 	}
 
 	db := database.DB
 	stmt, err := db.Prepare(`INSERT INTO Account (username, name, password, email, affiliation, bio, yoe, role)
 	VALUES (?,?,?,?,?,?,?,?)`)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error processing request")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error processing request")
 	}
 	defer stmt.Close()
 
 	account.Password, err = HashPassword(account.Password)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error processing request")
-	}
-	_, err = stmt.Exec(account.Username, account.Name, account.Password, account.Email, account.Affiliation, account.Bio, account.YearsOfExperience, account.Role)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error adding account, try a different username or email")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error processing request")
 	}
 
-	return c.SendString("Account successfully created!")
+	if strings.ToLower(account.Role) == "student" {
+		account.YearsOfExperience = -1
+	}
+
+	_, err = stmt.Exec(account.Username, account.Name, account.Password, account.Email, account.Affiliation, account.Bio, account.YearsOfExperience, account.Role)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON("Error adding account, try a different username or email")
+	}
+
+	return c.JSON("Account successfully created!")
 }
 
 func GetAllUsers(c *fiber.Ctx) error {
 	db := database.DB
 	stmt, err := db.Prepare(`SELECT * FROM Account`)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error processing request")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error processing request")
 	}
 	defer stmt.Close()
 
 	rows, err := stmt.Query()
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error executing query")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error executing query")
 	}
 	defer rows.Close()
 
@@ -152,7 +162,7 @@ func GetAllUsers(c *fiber.Ctx) error {
 			&account.Role,
 		)
 		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).SendString("Error processing request")
+			return c.Status(fiber.StatusInternalServerError).JSON("Error processing request")
 		}
 		accounts = append(accounts, account)
 	}
@@ -167,7 +177,7 @@ func GetUserById(c *fiber.Ctx) error {
 	db := database.DB
 	stmt, err := db.Prepare(`SELECT * FROM Account WHERE id = ?`)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString("Error processing request")
+		return c.Status(fiber.StatusBadRequest).JSON("Error processing request")
 	}
 	defer stmt.Close()
 
@@ -184,7 +194,7 @@ func GetUserById(c *fiber.Ctx) error {
 		&account.Role,
 	)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Invalid user id")
+		return c.Status(fiber.StatusInternalServerError).JSON("Invalid user id")
 	}
 
 	return c.JSON(account)
@@ -194,18 +204,18 @@ func ChangePassword(c *fiber.Ctx) error {
 
 	cookieString := c.Get("Cookie")
 	if cookieString == "" {
-		return c.Status(fiber.StatusForbidden).SendString("Not authorized")
+		return c.Status(fiber.StatusForbidden).JSON("Not authorized")
 	}
 
 	token, err := GetJwtTokenFromHeader(cookieString)
 	if err != nil {
-		return c.Status(fiber.StatusForbidden).SendString("Not authorized")
+		return c.Status(fiber.StatusForbidden).JSON("Not authorized")
 	}
 
 	payload, err := services.VerifyToken(token)
 	if err != nil {
 		print(err.Error())
-		return c.Status(fiber.StatusBadRequest).SendString("Invalid user id")
+		return c.Status(fiber.StatusBadRequest).JSON("Invalid user id")
 	}
 
 	var obj map[string]string
@@ -215,26 +225,26 @@ func ChangePassword(c *fiber.Ctx) error {
 
 	newPassword, err := HashPassword(obj["password"])
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error processing request")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error processing request")
 	}
 
 	db := database.DB
 	stmt, err := db.Prepare("UPDATE Account SET password = ? WHERE id = ?")
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString("Error processing request")
+		return c.Status(fiber.StatusBadRequest).JSON("Error processing request")
 	}
 	result, err := stmt.Exec(newPassword, payload.ID)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString("Invalid user id")
+		return c.Status(fiber.StatusBadRequest).JSON("Invalid user id")
 	}
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error parsing rows")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error parsing rows")
 	}
 	if rowsAffected == 0 {
-		return c.SendString("Account not found!")
+		return c.JSON("Account not found!")
 	} else {
-		return c.SendString("Password updated successfully!")
+		return c.JSON("Password updated successfully!")
 	}
 }
 
@@ -242,23 +252,23 @@ func UpdateUser(c *fiber.Ctx) error {
 
 	cookieStr := c.Get("Cookie")
 	if cookieStr == "" {
-		return c.Status(fiber.StatusForbidden).SendString("Not authorized")
+		return c.Status(fiber.StatusForbidden).JSON("Not authorized")
 	}
 
 	token, err := GetJwtTokenFromHeader(cookieStr)
 	if err != nil {
-		return c.Status(fiber.StatusForbidden).SendString("Not authorized")
+		return c.Status(fiber.StatusForbidden).JSON("Not authorized")
 	}
 
 	payload, err := services.VerifyToken(token)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Failed to verify token")
+		return c.Status(fiber.StatusInternalServerError).JSON("Failed to verify token")
 	}
 
 	var account = model.Account{}
 	err = c.BodyParser(&account)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error parsing fields")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error parsing fields")
 	}
 
 	db := database.DB
@@ -267,23 +277,23 @@ func UpdateUser(c *fiber.Ctx) error {
 		SET username = ?, name = ?, email = ?, affiliation = ?, bio = ?, yoe = ?
 		WHERE id = ?`)
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error processing request")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error processing request")
 	}
 	defer stmt.Close()
 
 	result, err := stmt.Exec(account.Username, account.Name, account.Email, account.Affiliation, account.Bio, account.YearsOfExperience, payload.ID)
 	if err != nil {
 		fmt.Println(err.Error())
-		return c.Status(fiber.StatusInternalServerError).SendString("Error updating account details")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error updating account details")
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).SendString("Error processing request")
+		return c.Status(fiber.StatusInternalServerError).JSON("Error processing request")
 	}
 
 	if rowsAffected > 0 {
-		return c.SendString("Account details updated successfully!")
+		return c.JSON("Account details updated successfully!")
 	}
-	return c.Status(fiber.StatusInternalServerError).SendString("Account doesn't exist")
+	return c.Status(fiber.StatusInternalServerError).JSON("Account doesn't exist")
 }

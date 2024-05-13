@@ -51,15 +51,19 @@ public class RatingApi {
       return Response.status(Response.Status.UNAUTHORIZED).entity("Only students can rate courses").build();
     }
 
+    long studentId = Long.parseLong(claims.getClaimValue("id").toString());
+    rating.setStudentId(studentId);
+
+    if (courseRepo.findCourseById(rating.getCourseId()) == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Course not found").build();
+    }
+
     Rating result = ratingRepo.makeRating(rating);
     if (result == null) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error submitting course rating").build();
     }
 
     double numberOfRatings = ratingRepo.getNumberOfRatings(rating.getCourseId());
-    if (numberOfRatings == -1) {
-      return Response.status(Response.Status.NOT_FOUND).entity("Course not found").build();
-    }
     boolean updated = courseRepo.updateCourseRating(rating.getCourseId(), rating.getRating(),
         numberOfRatings);
     if (!updated) {
