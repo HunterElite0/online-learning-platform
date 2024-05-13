@@ -1,7 +1,6 @@
 package com.online.controllers;
 
 import com.online.model.Notification;
-import com.online.model.Rating;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateful;

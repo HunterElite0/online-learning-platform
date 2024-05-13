@@ -33,17 +33,17 @@ public class RatingApi {
   public Response submitCourseRating(Rating rating) {
     Rating result = ratingRepo.makeRating(rating);
     if (result == null) {
-      return Response.serverError().build();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error submitting course rating").build();
     }
 
     double numberOfRatings = ratingRepo.getNumberOfRatings(rating.getCourseId());
     if (numberOfRatings == -1) {
-      return Response.serverError().build();
+      return Response.status(Response.Status.NOT_FOUND).entity("Course not found").build();
     }
     boolean updated = courseRepo.updateCourseRating(rating.getCourseId(), rating.getRating(),
         numberOfRatings);
     if (!updated) {
-      return Response.serverError().build();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error submitting course rating").build();
     }
     return Response.ok("Rating submitted!").build();
   }
