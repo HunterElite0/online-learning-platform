@@ -1,0 +1,16 @@
+services:
+  account-service:
+
+    image: account-service
+    build: ./account-service/
+    container_name: account-service
+    ports:
+      - "8081:3000"
+    
+  course-service:
+    image: course-service
+    build: ./course-service/
+    container_name: course-service
+    ports:
+      - "8080:8080"
+      - "9990:9990"
