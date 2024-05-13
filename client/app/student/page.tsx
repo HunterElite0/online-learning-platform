@@ -9,22 +9,37 @@ import {
   DropdownMenu,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import { GetServerSideProps } from "next";
+import { cookies } from "next/headers";
 
-export const getServerSideProps = (async () => {
-  const Cookies = require("js-cookie");
-  const id = Cookies.get("id");
-  const res = await fetch("https://localhost:8081/account/user/" + id);
+async function getAccountDetails(id: number) {
+  console.log(id);
+  const res = await fetch("http://localhost:8081/account/user/" + id);
   const response = await res.json();
-  const accountDetails: string = response.name;
-  return { props: { accountDetails } };
-}) satisfies GetServerSideProps<{ accountDetails: string }>;
+  const accountDetails: any = response;
+  console.log(accountDetails);
+  return accountDetails.name;
+}
 
-export default function StudentPage({
-  accountDetails,
-}: {
-  accountDetails: string;
-}) {
+function getInitials(name: string) {
+  const initials = name
+    .match(/(\b\S)?/g)
+    ?.join("")
+    ?.match(/(^\S|\S$)?/g)
+    ?.join("");
+  return initials || "N/A";
+}
+
+export default async function StudentPage() {
+  const cookieStore = cookies();
+  const id = cookieStore.get("id")?.value;
+  if (!id) {
+    return <div>Not logged in</div>;
+  }
+  const accountDetails: string = await getAccountDetails(
+    id as unknown as number
+  );
+  const initials = getInitials(accountDetails);
+
   return (
     <main className="flex flex-col min-h-screen">
       <header className="bg-gray-950 text-white py-4 px-6">
@@ -36,13 +51,13 @@ export default function StudentPage({
                 <Button className="rounded-full" size="icon" variant="ghost">
                   <Avatar>
                     <AvatarImage alt="@shadcn" src="/placeholder-avatar.jpg" />
-                    <AvatarFallback>JP</AvatarFallback>
+                    <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                   <span className="sr-only">Toggle user menu</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Jared Palmer</DropdownMenuLabel>
+                <DropdownMenuLabel>{accountDetails}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>Settings</DropdownMenuItem>
                 <DropdownMenuItem>Logout</DropdownMenuItem>
@@ -94,7 +109,7 @@ export default function StudentPage({
   );
 }
 
-function BellIcon(props : any) {
+function BellIcon(props: any) {
   return (
     <svg
       {...props}
@@ -114,7 +129,7 @@ function BellIcon(props : any) {
   );
 }
 
-function BookIcon(props : any) {
+function BookIcon(props: any) {
   return (
     <svg
       {...props}
@@ -133,7 +148,7 @@ function BookIcon(props : any) {
   );
 }
 
-function BookOpenIcon(props : any) {
+function BookOpenIcon(props: any) {
   return (
     <svg
       {...props}
@@ -153,7 +168,7 @@ function BookOpenIcon(props : any) {
   );
 }
 
-function ClipboardListIcon(props : any) {
+function ClipboardListIcon(props: any) {
   return (
     <svg
       {...props}
@@ -177,7 +192,7 @@ function ClipboardListIcon(props : any) {
   );
 }
 
-function SearchIcon(props : any) {
+function SearchIcon(props: any) {
   return (
     <svg
       {...props}

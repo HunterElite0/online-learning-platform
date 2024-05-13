@@ -14,6 +14,15 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type AccountData struct {
+	Username          string `json:"username"`
+	Name              string `json:"name"`
+	Email             string `json:"email"`
+	Affiliation       string `json:"affiliation"`
+	Bio               string `json:"bio"`
+	YearsOfExperience int    `json:"yoe"`
+}
+
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
@@ -46,7 +55,7 @@ func Login(c *fiber.Ctx) error {
 		Password   string `json:"password"`
 	}
 
-	type AccountData struct {
+	type TokenData struct {
 		ID       int64
 		Password string
 		Role     string
@@ -70,7 +79,7 @@ func Login(c *fiber.Ctx) error {
 	}
 	defer stmt.Close()
 
-	account := AccountData{}
+	account := TokenData{}
 	err = stmt.QueryRow(request.Identifier, request.Identifier).Scan(
 		&account.ID,
 		&account.Role,
@@ -181,7 +190,7 @@ func GetUserById(c *fiber.Ctx) error {
 	}
 	defer stmt.Close()
 
-	var account model.Account
+	var account = AccountData{}
 	err = stmt.QueryRow(id).Scan(
 		&account.Username,
 		&account.Name,

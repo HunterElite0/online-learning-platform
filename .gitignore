@@ -28,3 +28,4 @@ replay_pid*
 
 course-service/learning/target
 account-service/database.db
+account-service/app
