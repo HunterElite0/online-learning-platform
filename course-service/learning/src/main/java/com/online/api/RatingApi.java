@@ -2,13 +2,17 @@ package com.online.api;
 
 import java.util.List;
 
+import org.jose4j.jwt.JwtClaims;
+
 import com.online.controllers.CourseRepository;
 import com.online.controllers.RatingRepository;
 import com.online.model.Rating;
+import com.online.service.JwtParser;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -28,9 +32,25 @@ public class RatingApi {
   @EJB
   CourseRepository courseRepo;
 
+  JwtParser jwtParser = new JwtParser();
+
   @POST
   @Path("/submit")
-  public Response submitCourseRating(Rating rating) {
+  public Response submitCourseRating(@CookieParam("jwt") String jwt, Rating rating) {
+
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    JwtClaims claims = jwtParser.parseClaims(jwt);
+    if (claims == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    if (!claims.getClaimValue("role").toString().equals("student")) {
+      return Response.status(Response.Status.UNAUTHORIZED).entity("Only students can rate courses").build();
+    }
+
     Rating result = ratingRepo.makeRating(rating);
     if (result == null) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error submitting course rating").build();
