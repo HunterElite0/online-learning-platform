@@ -2,13 +2,17 @@ package com.online.api;
 
 import java.util.List;
 
+import org.jose4j.jwt.JwtClaims;
+
 import com.online.controllers.EnrollmentRepository;
 import com.online.controllers.NotificationRepository;
 import com.online.model.Enrollment;
+import com.online.service.JwtParser;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -29,9 +33,26 @@ public class EnrollmentApi {
   @EJB
   private NotificationRepository notificationRepo;
 
+  JwtParser jwtParser = new JwtParser();
+
   @PUT
   @Path("/accept/{id}")
-  public Response acceptEnrollment(@PathParam("id") long id) {
+  public Response acceptEnrollment(@CookieParam("jwt") String jwt, @PathParam("id") long id) {
+
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    JwtClaims claims = jwtParser.parseClaims(jwt);
+    if (claims == null) {
+      System.out.println("Claims are null");
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    if (!claims.getClaimValue("role").equals("instructor".toLowerCase())) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
     String response = enrollmentRepo.acceptEnrollment(id);
     if (response != null) {
       Enrollment enrollment = enrollmentRepo.getEnrollmentById(id);
@@ -44,7 +65,22 @@ public class EnrollmentApi {
 
   @PUT
   @Path("/reject/{id}")
-  public Response rejectEnrollment(@PathParam("id") long id) {
+  public Response rejectEnrollment(@CookieParam("jwt") String jwt, @PathParam("id") long id) {
+
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    JwtClaims claims = jwtParser.parseClaims(jwt);
+    if (claims == null) {
+      System.out.println("Claims are null");
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    if (!claims.getClaimValue("role").equals("instructor".toLowerCase())) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
     String response = enrollmentRepo.rejectEnrollment(id);
     if (response != null) {
       Enrollment enrollment = enrollmentRepo.getEnrollmentById(id);
@@ -66,9 +102,25 @@ public class EnrollmentApi {
   }
 
   @GET
-  @Path("/student/{id}")
-  public Response getEnrollmentsByStudentId(@PathParam("id") long id) {
-    List<Enrollment> enrollments = enrollmentRepo.getEnrollmentsByStudentId(id);
+  @Path("/student-list")
+  public Response getEnrollmentsByStudentId(@CookieParam("jwt") String jwt) {
+
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    JwtClaims claims = jwtParser.parseClaims(jwt);
+    if (claims == null) {
+      System.out.println("Claims are null");
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+    if (!claims.getClaimValue("role").equals("student")) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    long studentId = Long.parseLong(claims.getClaimValue("id").toString());
+
+    List<Enrollment> enrollments = enrollmentRepo.getEnrollmentsByStudentId(studentId);
     if (enrollments != null) {
       return Response.ok(enrollments).build();
     }

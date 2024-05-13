@@ -1,8 +1,11 @@
 package com.online.api;
 
+import org.jose4j.jwt.JwtClaims;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.online.controllers.CourseRepository;
 import com.online.model.Enrollment;
+import com.online.service.JwtParser;
 
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
@@ -13,6 +16,7 @@ import jakarta.jms.JMSDestinationDefinition;
 import jakarta.jms.JMSDestinationDefinitions;
 import jakarta.jms.Queue;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -37,12 +41,31 @@ public class EnrollRequestApi {
   @EJB
   private CourseRepository courseRepo;
 
+  JwtParser jwtParser = new JwtParser();
+
   @POST
-  public Response makeEnrollmentRequest(Enrollment enrollment) {
+  public Response makeEnrollmentRequest(@CookieParam("jwt") String jwt, Enrollment enrollment) {
     if (courseRepo.findCourseById(enrollment.getCourseId()) == null) {
       return Response.status(Response.Status.NOT_FOUND).entity("Course not found").build();
     }
+
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
     try {
+
+      JwtClaims claims = jwtParser.parseClaims(jwt);
+      if (claims == null) {
+        System.out.println("Claims are null");
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+      }
+      if (!claims.getClaimValue("role").equals("student")) {
+        return Response.status(Response.Status.UNAUTHORIZED).build();
+      }
+
+      enrollment.setStudentId((Long) claims.getClaimValue("id"));
+
       ObjectMapper mapper = new ObjectMapper();
       String enrollmentJson = mapper.writeValueAsString(enrollment);
       context.createProducer().send(queue, enrollmentJson);

@@ -61,7 +61,21 @@ public class CourseApi {
 
   @POST
   @Path("/create")
-  public Response createCourse(Course course) {
+  public Response createCourse(@CookieParam("jwt") String jwt, Course course) {
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    JwtClaims claims = jwtParser.parseClaims(jwt);
+    if (claims == null) {
+      System.out.println("Claims are null");
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    if (!claims.getClaimValue("role").equals("instructor".toLowerCase())) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
     Course obj = repository.create(course);
     if (obj == null) {
       return Response.serverError().build();
@@ -126,7 +140,7 @@ public class CourseApi {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    if (!claims.getClaimValue("role").equals("instructor".toLowerCase())) {
+    if (!claims.getClaimValue("role").equals("admin".toLowerCase())) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
@@ -151,7 +165,7 @@ public class CourseApi {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    if (!claims.getClaimValue("role").equals("instructor".toLowerCase())) {
+    if (!claims.getClaimValue("role").equals("admin".toLowerCase())) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
@@ -175,7 +189,7 @@ public class CourseApi {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    if (!claims.getClaimValue("role").equals("instructor".toLowerCase())) {
+    if (!claims.getClaimValue("role").equals("admin".toLowerCase())) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
