@@ -3,6 +3,7 @@ package com.online.api;
 import java.util.List;
 
 import com.online.controllers.EnrollmentRepository;
+import com.online.controllers.NotificationRepository;
 import com.online.model.Enrollment;
 
 import jakarta.ejb.EJB;
@@ -23,15 +24,19 @@ import jakarta.ws.rs.core.Response;
 public class EnrollmentApi {
 
   @EJB
-  private EnrollmentRepository repository;
+  private EnrollmentRepository enrollmentRepo;
+
+  @EJB
+  private NotificationRepository notificationRepo;
 
   @PUT
   @Path("/accept/{id}")
   public Response acceptEnrollment(@PathParam("id") long id) {
-    String response = repository.acceptEnrollment(id);
+    String response = enrollmentRepo.acceptEnrollment(id);
     if (response != null) {
-      repository.getEnrollmentById(id);
-      
+      Enrollment enrollment = enrollmentRepo.getEnrollmentById(id);
+      notificationRepo.makeNotification(enrollment.getStudentId(), "Enrollment accepted");
+
       return Response.ok(response).build();
     }
     return Response.serverError().build();
@@ -40,8 +45,11 @@ public class EnrollmentApi {
   @PUT
   @Path("/reject/{id}")
   public Response rejectEnrollment(@PathParam("id") long id) {
-    String response = repository.rejectEnrollment(id);
+    String response = enrollmentRepo.rejectEnrollment(id);
     if (response != null) {
+      Enrollment enrollment = enrollmentRepo.getEnrollmentById(id);
+      notificationRepo.makeNotification(enrollment.getStudentId(), "Enrollment rejected");
+
       return Response.ok(response).build();
     }
     return Response.serverError().build();
@@ -50,7 +58,7 @@ public class EnrollmentApi {
   @GET
   @Path("/{id}")
   public Response getEnrollmentById(@PathParam("id") long id) {
-    Enrollment enrollment = repository.getEnrollmentById(id);
+    Enrollment enrollment = enrollmentRepo.getEnrollmentById(id);
     if (enrollment != null) {
       return Response.ok(enrollment).build();
     }
@@ -60,7 +68,7 @@ public class EnrollmentApi {
   @GET
   @Path("/student/{id}")
   public Response getEnrollmentsByStudentId(@PathParam("id") long id) {
-    List<Enrollment> enrollments = repository.getEnrollmentsByStudentId(id);
+    List<Enrollment> enrollments = enrollmentRepo.getEnrollmentsByStudentId(id);
     if (enrollments != null) {
       return Response.ok(enrollments).build();
     }
