@@ -2,8 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
-import Cookies from "js-cookie";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -35,6 +35,10 @@ export default function LoginForm() {
     },
   });
 
+  const Cookies : any = require("js-cookie");
+  const jose : any = require("jose");
+  const router = useRouter();
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     // Endpoint: http://localhost:8081/account/login
     const response = await fetch("http://localhost:8081/account/login", {
@@ -46,10 +50,25 @@ export default function LoginForm() {
     });
 
     const result = await response.json();
+    const claims = jose.decodeJwt(result.cookie.token);
 
     if (response.ok) {
       Cookies.set(result.cookie.name, result.cookie.token);
+      Cookies.set("id", claims.id);
+      Cookies.set("role", claims.role);
+      console.log(claims);
       alert("Login successful!");
+
+      if (claims.role == "student") {
+        router.push("/student");
+      } else if (claims.role == "instructor") {
+        router.push("/instructor");
+      } else if (claims.role == "admin") {
+        router.push("/admin");
+      } else {
+        alert("Invalid role.");
+      }
+
     } else {
       alert(result);
     }

@@ -175,7 +175,7 @@ func GetUserById(c *fiber.Ctx) error {
 	id := c.Params("id")
 
 	db := database.DB
-	stmt, err := db.Prepare(`SELECT * FROM Account WHERE id = ?`)
+	stmt, err := db.Prepare(`SELECT username, name, email, affiliation, bio, yoe FROM Account WHERE id = ?`)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON("Error processing request")
 	}
@@ -183,15 +183,12 @@ func GetUserById(c *fiber.Ctx) error {
 
 	var account model.Account
 	err = stmt.QueryRow(id).Scan(
-		&account.ID,
 		&account.Username,
 		&account.Name,
-		&account.Password,
 		&account.Email,
 		&account.Affiliation,
 		&account.Bio,
 		&account.YearsOfExperience,
-		&account.Role,
 	)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON("Invalid user id")
