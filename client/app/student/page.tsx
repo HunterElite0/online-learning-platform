@@ -12,11 +12,11 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 
 async function getAccountDetails(id: number) {
-  console.log(id);
-  const res = await fetch("http://localhost:8081/account/user/" + id);
+  // console.log(id);
+  const res = await fetch("http://account-service:8081/account/user/" + id);
   const response = await res.json();
   const accountDetails: any = response;
-  console.log(accountDetails);
+  // console.log(accountDetails);
   return accountDetails.name;
 }
 
@@ -39,7 +39,7 @@ export default async function StudentPage() {
     id as unknown as number
   );
   const initials = getInitials(accountDetails);
-
+  
   return (
     <main className="flex flex-col min-h-screen">
       <header className="bg-gray-950 text-white py-4 px-6">
@@ -59,7 +59,7 @@ export default async function StudentPage() {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>{accountDetails}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>Account Settings</DropdownMenuItem>
                 <DropdownMenuItem>Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -71,8 +71,17 @@ export default async function StudentPage() {
           className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
           href="#"
         >
+          <BookIcon className="w-8 h-8 text-gray-600" />
+          <span className="text-gray-700 font-medium">
+            MY ENROLLED COURSES
+          </span>
+        </Link>
+        <Link
+          className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
+          href="#"
+        >
           <BookOpenIcon className="w-8 h-8 text-gray-600" />
-          <span className="text-gray-700 font-medium">GET COURSES</span>
+          <span className="text-gray-700 font-medium">GET ALL COURSES</span>
         </Link>
         <Link
           className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
@@ -94,15 +103,6 @@ export default async function StudentPage() {
         >
           <ClipboardListIcon className="w-8 h-8 text-gray-600" />
           <span className="text-gray-700 font-medium">VIEW ENROLLMENTS</span>
-        </Link>
-        <Link
-          className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
-          href="#"
-        >
-          <BookIcon className="w-8 h-8 text-gray-600" />
-          <span className="text-gray-700 font-medium">
-            CURRENTLY ENROLLED COURSES
-          </span>
         </Link>
       </section>
     </main>

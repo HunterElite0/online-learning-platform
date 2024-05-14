@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -34,12 +34,11 @@ export default function LoginForm() {
     },
   });
 
-  const Cookies : any = require("js-cookie");
-  const jose : any = require("jose");
+  const Cookies: any = require("js-cookie");
+  const jose: any = require("jose");
   const router = useRouter();
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    // Endpoint: http://localhost:8081/account/login
     const response = await fetch("http://localhost:8081/account/login", {
       method: "POST",
       headers: {
@@ -67,7 +66,6 @@ export default function LoginForm() {
       } else {
         alert("Invalid role.");
       }
-
     } else {
       alert(result);
     }
@@ -112,7 +110,7 @@ export default function LoginForm() {
         </form>
       </Form>
       <div>
-        <h3>Don't have an account yet? </h3>
+        <h3>Don&apos;t have an account yet? </h3>
         <a href="/register" className="text-blue-500">
           Register here.
         </a>

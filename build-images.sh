@@ -15,4 +15,4 @@ cd course-service
 ./start.sh
 cd ..
 
-docker-compose up
+docker-compose up --build

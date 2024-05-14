@@ -75,7 +75,7 @@ export default function RegisterForm() {
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     // Endpoint: http://localhost:8081/account/create
-    const response = await fetch("http://localhost:8081/account/create", {
+    const response = await fetch("http://localhost:8081/account/create/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

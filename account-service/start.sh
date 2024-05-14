@@ -3,4 +3,4 @@
 # Build locally (development)
 go build -o app .
 
-docker build -t account-service .
+# docker build -t account-service .
