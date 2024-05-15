@@ -38,6 +38,9 @@ public class RatingApi {
   @Path("/submit")
   public Response submitCourseRating(RatingRequest request) {
 
+    // System.out.println(request.getRating().toString());
+    // System.out.println(request.getJwt());
+
     if (request.getJwt() == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -47,7 +50,7 @@ public class RatingApi {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    if (!claims.getClaimValue("role").toString().equals("student")) {
+    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("student")) {
       return Response.status(Response.Status.UNAUTHORIZED).entity("Only students can rate courses").build();
     }
 
@@ -67,7 +70,7 @@ public class RatingApi {
     boolean updated = courseRepo.updateCourseRating(request.getRating().getCourseId(), request.getRating().getRating(),
         numberOfRatings);
     if (!updated) {
-      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error submitting course rating").build();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error submitting course rating2").build();
     }
     return Response.ok("Rating submitted!").build();
   }

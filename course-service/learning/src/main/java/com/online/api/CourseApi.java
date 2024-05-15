@@ -87,6 +87,8 @@ public class CourseApi {
   @GET
   @Path("/courses")
   public Response getAllCourses() {
+    // TODO: implement after creating admin page
+    // List<Course> courses = repository.listAllValidCourses();
     List<Course> courses = repository.listAllCourses();
     if (courses == null) {
       return Response.serverError().build();

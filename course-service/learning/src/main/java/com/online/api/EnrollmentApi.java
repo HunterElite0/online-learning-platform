@@ -113,7 +113,7 @@ public class EnrollmentApi {
       System.out.println("Claims are null");
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
-    if (!claims.getClaimValue("role").equals("student")) {
+    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("student")) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
@@ -139,7 +139,7 @@ public class EnrollmentApi {
       System.out.println("Claims are null");
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
-    if (!claims.getClaimValue("role").equals("instructor")) {
+    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("instructor")) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 

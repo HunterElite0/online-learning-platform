@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * v0 by Vercel.
  * @see https://v0.dev/t/i142wjHcKiM
@@ -14,19 +16,53 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { CourseCard } from "@/components/course-card";
+import { useState, useEffect } from "react";
 
 async function getAllCourses() {
-  // const URL : string = "http://course-service:8080/learning/course/courses";
   const URL: string = "http://localhost:8080/learning/course/courses";
   const res = await fetch(URL);
   const response = await res.json();
-  // console.log(response);
   return response;
 }
 
-export default async function CoursesPage() {
-  const courses: any = await getAllCourses();
-  const courseArr = Array.from(courses);
+export default function CoursesPage() {
+  const [courses, setCourses] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState("rating");
+  const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const coursesData = await getAllCourses();
+      setCourses(coursesData);
+      setFilteredCourses(coursesData);
+    };
+    fetchCourses();
+  }, []);
+
+  useEffect(() => {
+    let updatedCourses = [...courses];
+
+    if (searchQuery) {
+      updatedCourses = updatedCourses.filter((course) =>
+        course.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (sortOption === "rating") {
+      updatedCourses.sort((a, b) => b.rating - a.rating);
+    }
+
+    setFilteredCourses(updatedCourses);
+  }, [searchQuery, sortOption, courses]);
+
+  const handleSearchChange = (e: any) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortOption(value);
+  };
 
   return (
     <main className="flex flex-col min-h-screen bg-gray-950 text-white">
@@ -38,7 +74,7 @@ export default async function CoursesPage() {
               <h1 className="text-2xl font-bold">Student Dashboard</h1>
             </Link>
           </div>
-        </header>{" "}
+        </header>
         <div className="flex justify-between items-center mb-6 pt-3">
           <h2 className="text-2xl font-bold">All Courses</h2>
           <DropdownMenu>
@@ -49,7 +85,10 @@ export default async function CoursesPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuRadioGroup value="rating">
+              <DropdownMenuRadioGroup
+                value={sortOption}
+                onValueChange={handleSortChange}
+              >
                 <DropdownMenuRadioItem value="rating">
                   Rating
                 </DropdownMenuRadioItem>
@@ -64,27 +103,27 @@ export default async function CoursesPage() {
               className="bg-gray-800 border-none pl-10 pr-4 py-2 rounded-md focus:ring-2 focus:ring-gray-400 focus:outline-none"
               placeholder="Search courses..."
               type="search"
+              value={searchQuery}
+              onChange={handleSearchChange}
             />
           </form>
         </div>
       </div>
 
-      <section className="container mx-auto py-8 px-4 md:px-6 lg:px-8 ">
+      <section className="container mx-auto py-8 px-4 md:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courseArr.length > 0 ? (
-              courseArr.map((course: any) => (
-                <CourseCard
-                  key={course.id}
-                  courseId={course.id}
-                  courseName={course.name}
-                  courseRating={course.rating}
-                />
-              ))
-            ) : (
-              <p className="text-center text-gray-400">No courses found.</p>
-            )}
-          </div>
+          {filteredCourses.length > 0 ? (
+            filteredCourses.map((course: any) => (
+              <CourseCard
+                key={course.id}
+                courseId={course.id}
+                courseName={course.name}
+                courseRating={course.rating}
+              />
+            ))
+          ) : (
+            <p className="text-center text-gray-400">No courses found.</p>
+          )}
         </div>
       </section>
       <button className="fixed bottom-6 right-6 bg-gray-800 hover:bg-gray-700 text-white rounded-full p-3 shadow-md transition-colors">
