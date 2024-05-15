@@ -3,6 +3,7 @@ package com.online.api;
 import com.online.controllers.CourseRepository;
 import com.online.model.Course;
 import com.online.service.JwtParser;
+import com.online.wrappers.CourseRequest;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
@@ -60,17 +61,13 @@ public class CourseApi {
 
   @POST
   @Path("/create")
-  public Response createCourse(String jwt, Course course) {
+  public Response createCourse(CourseRequest request) {
 
-    System.out.println("===========================");
-    System.out.println(jwt);
-    System.out.println("===========================");
-
-    if (jwt == null) {
+    if (request.getJwt() == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    JwtClaims claims = jwtParser.parseClaims(jwt);
+    JwtClaims claims = jwtParser.parseClaims(request.getJwt());
     if (claims == null) {
       System.out.println("Claims are null");
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -80,7 +77,7 @@ public class CourseApi {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    Course obj = repository.create(course);
+    Course obj = repository.create(request.getCourse());
     if (obj == null) {
       return Response.serverError().build();
     }
@@ -109,12 +106,12 @@ public class CourseApi {
 
   @PUT
   @Path("/update/{id}")
-  public Response updateCourse(String jwt, @PathParam("id") long id, Course course) {
-    if (jwt == null) {
+  public Response updateCourse(@PathParam("id") long id, CourseRequest request) {
+    if (request.getJwt() == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    JwtClaims claims = jwtParser.parseClaims(jwt);
+    JwtClaims claims = jwtParser.parseClaims(request.getJwt());
     if (claims == null) {
       System.out.println("Claims are null");
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -124,7 +121,7 @@ public class CourseApi {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    String response = repository.updateCourse(id, course);
+    String response = repository.updateCourse(id, request.getCourse());
     if (response == null) {
       return Response.serverError().build();
     }

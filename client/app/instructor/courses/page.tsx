@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { CourseCard } from "@/components/course-card";
+import { cookies } from "next/headers"
 
 async function getAllCourses() {
-  // const URL : string = "http://course-service:8080/learning/course/courses";
-  const URL: string = "http://localhost:8080/learning/course/courses";
+  // const URL : string = "http://course-service:8080/learning/course/courses/" + ;
+  const URL: string = "http://localhost:8080/learning/course/courses/" + cookies().get("id")?.value;
   const res = await fetch(URL);
   const response = await res.json();
   // console.log(response);

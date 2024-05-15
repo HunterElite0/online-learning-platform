@@ -8,6 +8,7 @@ import com.online.controllers.CourseRepository;
 import com.online.controllers.RatingRepository;
 import com.online.model.Rating;
 import com.online.service.JwtParser;
+import com.online.wrappers.RatingRequest;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
@@ -35,13 +36,13 @@ public class RatingApi {
 
   @POST
   @Path("/submit")
-  public Response submitCourseRating(String jwt, Rating rating) {
+  public Response submitCourseRating(RatingRequest request) {
 
-    if (jwt == null) {
+    if (request.getJwt() == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    JwtClaims claims = jwtParser.parseClaims(jwt);
+    JwtClaims claims = jwtParser.parseClaims(request.getJwt());
     if (claims == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -51,19 +52,19 @@ public class RatingApi {
     }
 
     long studentId = Long.parseLong(claims.getClaimValue("id").toString());
-    rating.setStudentId(studentId);
+    request.getRating().setStudentId(studentId);
 
-    if (courseRepo.findCourseById(rating.getCourseId()) == null) {
+    if (courseRepo.findCourseById(request.getRating().getCourseId()) == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity("Course not found").build();
     }
 
-    Rating result = ratingRepo.makeRating(rating);
+    Rating result = ratingRepo.makeRating(request.getRating());
     if (result == null) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error submitting course rating").build();
     }
 
-    double numberOfRatings = ratingRepo.getNumberOfRatings(rating.getCourseId());
-    boolean updated = courseRepo.updateCourseRating(rating.getCourseId(), rating.getRating(),
+    double numberOfRatings = ratingRepo.getNumberOfRatings(request.getRating().getCourseId());
+    boolean updated = courseRepo.updateCourseRating(request.getRating().getCourseId(), request.getRating().getRating(),
         numberOfRatings);
     if (!updated) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error submitting course rating").build();

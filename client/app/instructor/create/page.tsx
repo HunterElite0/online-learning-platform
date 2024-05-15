@@ -15,8 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { cookies } from "next/headers";
-
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -27,6 +25,9 @@ const FormSchema = z.object({
     message: "Category must be at least 2 characters.",
   }),
   capacity: z.coerce.number().int().nonnegative(),
+  content: z.string().min(2, {
+    message: "Content must be at least 2 characters.",
+  }),
 });
 
 export default function RegisterForm() {
@@ -37,23 +38,34 @@ export default function RegisterForm() {
       duration: 0,
       category: "",
       capacity: 0,
+      content: "",
     },
   });
 
   const router = useRouter();
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const cookies: any = require("js-cookie");
     const requestBody = {
       ...data,
-      jwt: cookies().get("jwt")?.value,
+      instructorId: cookies.get("id"),
     };
-    const response = await fetch("http://localhost:8080/learning/course/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
+    const payload = {
+      course: requestBody,
+      jwt: cookies.get("jwt"),
+    };
+    const URL = "http://localhost:8080/learning/course/create";
+    // const URL = "http://course-service:8080/learning/course/create";
+    const response = await fetch(
+      "http://localhost:8080/learning/course/create",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
     if (response.ok) {
       alert("Course created successfully.");
       router.push("/instructor");
@@ -114,6 +126,19 @@ export default function RegisterForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Course capacity</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Content</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>

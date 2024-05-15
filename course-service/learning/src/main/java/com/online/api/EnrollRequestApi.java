@@ -4,8 +4,8 @@ import org.jose4j.jwt.JwtClaims;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.online.controllers.CourseRepository;
-import com.online.model.Enrollment;
 import com.online.service.JwtParser;
+import com.online.wrappers.EnrollmentRequest;
 
 import jakarta.annotation.Resource;
 import jakarta.ejb.EJB;
@@ -43,18 +43,18 @@ public class EnrollRequestApi {
   JwtParser jwtParser = new JwtParser();
 
   @POST
-  public Response makeEnrollmentRequest(String jwt, Enrollment enrollment) {
-    if (courseRepo.findCourseById(enrollment.getCourseId()) == null) {
+  public Response makeEnrollmentRequest(EnrollmentRequest request) {
+    if (courseRepo.findCourseById(request.getEnrollment().getCourseId()) == null) {
       return Response.status(Response.Status.NOT_FOUND).entity("Course not found").build();
     }
 
-    if (jwt == null) {
+    if (request.getJwt() == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
     try {
 
-      JwtClaims claims = jwtParser.parseClaims(jwt);
+      JwtClaims claims = jwtParser.parseClaims(request.getJwt());
       if (claims == null) {
         System.out.println("Claims are null");
         return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -63,10 +63,10 @@ public class EnrollRequestApi {
         return Response.status(Response.Status.UNAUTHORIZED).build();
       }
 
-      enrollment.setStudentId((Long) claims.getClaimValue("id"));
+      request.getEnrollment().setStudentId((Long) claims.getClaimValue("id"));
 
       ObjectMapper mapper = new ObjectMapper();
-      String enrollmentJson = mapper.writeValueAsString(enrollment);
+      String enrollmentJson = mapper.writeValueAsString(request.getEnrollment());
       context.createProducer().send(queue, enrollmentJson);
       return Response.ok("Request sent").build();
     } catch (Exception e) {

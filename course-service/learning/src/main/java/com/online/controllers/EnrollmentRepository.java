@@ -87,4 +87,26 @@ public class EnrollmentRepository {
     }
   }
 
+  public List<Enrollment> getEnrollmentsByCourseId(long courseId) {
+    try {
+      TypedQuery<Enrollment> query = em
+          .createQuery("SELECT e FROM Enrollment e WHERE e.courseId = :courseId", Enrollment.class)
+          .setParameter("courseId", courseId);
+      return query.getResultList();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public List<Enrollment> getEnrollmentsByInstructorId(long instructorId) {
+    try {
+      TypedQuery<Enrollment> query = em
+          .createQuery("SELECT e FROM Enrollment e WHERE e.instructorId = :instructorId", Enrollment.class)
+          .setParameter("instructorId", instructorId);
+      return query.getResultList();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
 }

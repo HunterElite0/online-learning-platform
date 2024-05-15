@@ -12,7 +12,7 @@ const CourseCard = ({ courseId, courseName, courseRating }: { courseId: string, 
   ));
 
   return (
-    <div className="bg-gray-800 shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition-colors h-full">
+    <div className="bg-gray-800 shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition-colors h-full w-72">
       <h3 className="text-lg font-semibold line-clamp-2 text-center">
         {courseName}
       </h3>

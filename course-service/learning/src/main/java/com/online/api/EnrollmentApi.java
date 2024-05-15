@@ -125,4 +125,30 @@ public class EnrollmentApi {
     }
     return Response.serverError().build();
   }
+
+  @GET
+  @Path("/instuctor-list")
+  public Response getEnrollmentsByInstructorId(String jwt) {
+
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    JwtClaims claims = jwtParser.parseClaims(jwt);
+    if (claims == null) {
+      System.out.println("Claims are null");
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+    if (!claims.getClaimValue("role").equals("instructor")) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    long instructorId = Long.parseLong(claims.getClaimValue("id").toString());
+
+    List<Enrollment> enrollments = enrollmentRepo.getEnrollmentsByInstructorId(instructorId);
+    if (enrollments != null) {
+      return Response.ok(enrollments).build();
+    }
+    return Response.serverError().build();
+  }
 }
