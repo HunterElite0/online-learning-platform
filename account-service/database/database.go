@@ -41,6 +41,19 @@ func InitDB() error {
 	}
 
 	_, err = stmt.Exec()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	admin, err := db.Prepare(`INSERT INTO Account (username, name, password, email, affiliation, bio, yoe, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	_, err = admin.Exec("admin", "admin", "admin", "admin@admin.com", "admin", "admin", 0, "admin")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	DB = db
 

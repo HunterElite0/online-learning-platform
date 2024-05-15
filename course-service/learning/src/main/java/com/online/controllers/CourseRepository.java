@@ -100,6 +100,15 @@ public class CourseRepository {
     return "Course not found!";
   }
 
+  public List<Course> fetchAllCourses() {
+    try {
+      TypedQuery<Course> courses = em.createQuery("SELECT c.id, c.name, c.rating FROM Course c", Course.class);
+      return courses.getResultList();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
   public List<Course> listAllCourses() {
     try {
       TypedQuery<Course> courses = em.createQuery("SELECT c FROM Course c", Course.class);

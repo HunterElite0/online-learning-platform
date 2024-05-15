@@ -14,9 +14,9 @@ services:
       - "8080:8080"
       - "9990:9990"
 
-  client-service:
-    image: client-service
-    build: ./client/
-    container_name: client-service
-    ports:
-      - "3000:3000"
+  # client-service:
+  #   image: client-service
+  #   build: ./client/
+  #   container_name: client-service
+  #   ports:
+  #     - "3000:3000"

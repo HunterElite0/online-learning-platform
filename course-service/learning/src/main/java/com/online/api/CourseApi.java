@@ -7,7 +7,6 @@ import com.online.service.JwtParser;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -35,7 +34,7 @@ public class CourseApi {
 
   @GET
   @Path("/test")
-  public Response test(@CookieParam("jwt") String jwt) {
+  public Response test(String jwt) {
     try {
       System.out.println(jwt);
 
@@ -61,7 +60,12 @@ public class CourseApi {
 
   @POST
   @Path("/create")
-  public Response createCourse(@CookieParam("jwt") String jwt, Course course) {
+  public Response createCourse(String jwt, Course course) {
+
+    System.out.println("===========================");
+    System.out.println(jwt);
+    System.out.println("===========================");
+
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -105,7 +109,7 @@ public class CourseApi {
 
   @PUT
   @Path("/update/{id}")
-  public Response updateCourse(@CookieParam("jwt") String jwt, @PathParam("id") long id, Course course) {
+  public Response updateCourse(String jwt, @PathParam("id") long id, Course course) {
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -129,7 +133,7 @@ public class CourseApi {
 
   @PUT
   @Path("/accept/{id}")
-  public Response acceptCourseById(@CookieParam("jwt") String jwt, @PathParam("id") long id) {
+  public Response acceptCourseById(String jwt, @PathParam("id") long id) {
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -153,7 +157,7 @@ public class CourseApi {
 
   @PUT
   @Path("/reject/{id}")
-  public Response rejectCourseById(@CookieParam("jwt") String jwt, @PathParam("id") long id) {
+  public Response rejectCourseById(String jwt, @PathParam("id") long id) {
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -178,7 +182,7 @@ public class CourseApi {
 
   @DELETE
   @Path("/remove/{id}")
-  public Response removeCourseById(@CookieParam("jwt") String jwt, @PathParam("id") long id) {
+  public Response removeCourseById(String jwt, @PathParam("id") long id) {
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }

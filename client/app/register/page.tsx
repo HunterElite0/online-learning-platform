@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -45,13 +44,7 @@ const FormSchema = z.object({
   bio: z.string().min(2, {
     message: "Bio must be at least 2 characters.",
   }),
-  yoe: z
-    .number()
-    .int()
-    .min(0, {
-      message: "Years of experience must be a positive integer.",
-    })
-    .optional(),
+  yoe: z.coerce.number().int().nonnegative().optional(),
 });
 
 export default function RegisterForm() {
@@ -106,7 +99,6 @@ export default function RegisterForm() {
                 <FormControl>
                   <Input placeholder="Username" {...field} />
                 </FormControl>
-                {/* <FormDescription>This is your public display name.</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -120,7 +112,6 @@ export default function RegisterForm() {
                 <FormControl>
                   <Input placeholder="Full name" {...field} />
                 </FormControl>
-                {/* <FormDescription>This is your full name.</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -138,7 +129,6 @@ export default function RegisterForm() {
                     {...field}
                   />
                 </FormControl>
-                {/* <FormDescription>This is your personal email.</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -152,7 +142,6 @@ export default function RegisterForm() {
                 <FormControl>
                   <Input type="password" {...field} />
                 </FormControl>
-                {/* <FormDescription>This is your password.</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -166,7 +155,6 @@ export default function RegisterForm() {
                 <FormControl>
                   <Input placeholder="University of Waterloo" {...field} />
                 </FormControl>
-                {/* <FormDescription>This is your current affiliation.</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -191,7 +179,6 @@ export default function RegisterForm() {
                     <SelectItem value="instructor">Instructor</SelectItem>
                   </SelectContent>
                 </Select>
-                {/* <FormDescription>This is your role.</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
@@ -206,7 +193,6 @@ export default function RegisterForm() {
                   <FormControl>
                     <Input type="number" {...field} />
                   </FormControl>
-                  {/* <FormDescription>This is your years of experience.</FormDescription> */}
                   <FormMessage />
                 </FormItem>
               )}
@@ -225,7 +211,6 @@ export default function RegisterForm() {
                     {...field}
                   />
                 </FormControl>
-                {/* <FormDescription>This is your bio.</FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}

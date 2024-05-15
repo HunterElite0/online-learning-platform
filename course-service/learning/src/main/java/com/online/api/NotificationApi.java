@@ -11,7 +11,6 @@ import com.online.service.JwtParser;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -31,7 +30,7 @@ public class NotificationApi {
 
   @Path("/{studentId}")
   @GET
-  public Response getNotificationsByStudentId(@CookieParam("jwt") String jwt) {
+  public Response getNotificationsByStudentId(String jwt) {
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();

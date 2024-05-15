@@ -12,7 +12,6 @@ import com.online.service.JwtParser;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -37,7 +36,7 @@ public class EnrollmentApi {
 
   @PUT
   @Path("/accept/{id}")
-  public Response acceptEnrollment(@CookieParam("jwt") String jwt, @PathParam("id") long id) {
+  public Response acceptEnrollment(String jwt, @PathParam("id") long id) {
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -65,7 +64,7 @@ public class EnrollmentApi {
 
   @PUT
   @Path("/reject/{id}")
-  public Response rejectEnrollment(@CookieParam("jwt") String jwt, @PathParam("id") long id) {
+  public Response rejectEnrollment(String jwt, @PathParam("id") long id) {
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -103,7 +102,7 @@ public class EnrollmentApi {
 
   @GET
   @Path("/student-list")
-  public Response getEnrollmentsByStudentId(@CookieParam("jwt") String jwt) {
+  public Response getEnrollmentsByStudentId(String jwt) {
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();

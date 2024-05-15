@@ -12,7 +12,6 @@ import com.online.service.JwtParser;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -36,7 +35,7 @@ public class RatingApi {
 
   @POST
   @Path("/submit")
-  public Response submitCourseRating(@CookieParam("jwt") String jwt, Rating rating) {
+  public Response submitCourseRating(String jwt, Rating rating) {
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();

@@ -47,27 +47,33 @@ export default function LoginForm() {
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
-    const claims = jose.decodeJwt(result.cookie.token);
-
     if (response.ok) {
+      const result = await response.json();
+      const claims = jose.decodeJwt(result.cookie.token);
       Cookies.set(result.cookie.name, result.cookie.token);
       Cookies.set("id", claims.id);
       Cookies.set("role", claims.role);
       console.log(claims);
       alert("Login successful!");
 
-      if (claims.role == "student") {
+      if (claims.role.toLowerCase() == "student") {
         router.push("/student");
-      } else if (claims.role == "instructor") {
+        return;
+      } else if (claims.role.toLowerCase() == "instructor") {
         router.push("/instructor");
-      } else if (claims.role == "admin") {
+        return;
+      } else if (claims.role.toLowerCase() == "admin") {
         router.push("/admin");
+        return;
       } else {
         alert("Invalid role.");
+        router.push("/");
+        return;
       }
     } else {
-      alert(result);
+      alert("Login failed.");
+      router.push("/");
+      return;
     }
   }
 

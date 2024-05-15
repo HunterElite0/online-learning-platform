@@ -16,7 +16,6 @@ import jakarta.jms.JMSDestinationDefinition;
 import jakarta.jms.JMSDestinationDefinitions;
 import jakarta.jms.Queue;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -44,7 +43,7 @@ public class EnrollRequestApi {
   JwtParser jwtParser = new JwtParser();
 
   @POST
-  public Response makeEnrollmentRequest(@CookieParam("jwt") String jwt, Enrollment enrollment) {
+  public Response makeEnrollmentRequest(String jwt, Enrollment enrollment) {
     if (courseRepo.findCourseById(enrollment.getCourseId()) == null) {
       return Response.status(Response.Status.NOT_FOUND).entity("Course not found").build();
     }

@@ -4,47 +4,39 @@
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 import Link from "next/link";
-import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
   DropdownMenuContent,
   DropdownMenu,
   DropdownMenuRadioItem,
   DropdownMenuRadioGroup,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { CourseCard } from "@/components/course-card";
+
+async function getAllCourses() {
+  // const URL : string = "http://course-service:8080/learning/course/courses";
+  const URL: string = "http://localhost:8080/learning/course/courses";
+  const res = await fetch(URL);
+  const response = await res.json();
+  console.log(response);
+  const courses: any = response;
+  return courses;
+}
 
 export default function CoursesPage() {
+  const courses: any = getAllCourses();
+
   return (
     <main className="flex flex-col min-h-screen bg-gray-950 text-white">
-      <div className="sticky top-0 container py-4 px-6 backdrop-blur-md bg-black/30">
+      <div className="sticky top-0 py-4 px-6 backdrop-blur-md bg-black/30">
         <header className="py-3 border-b-4">
           <div className="flex items-center justify-between">
-            <Link className="flex items-center gap-2" href="#">
+            <Link className="flex items-center gap-2" href="/student">
               <ArrowLeftIcon className="w-5 h-5" />
               <h1 className="text-2xl font-bold">Student Dashboard</h1>
             </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className="rounded-full" size="icon" variant="ghost">
-                  <Avatar>
-                    <AvatarImage alt="@shadcn" src="/placeholder-avatar.jpg" />
-                    <AvatarFallback>JP</AvatarFallback>
-                  </Avatar>
-                  <span className="sr-only">Toggle user menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Jared Palmer</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         </header>{" "}
         <div className="flex justify-between items-center mb-6 pt-3">
@@ -78,189 +70,48 @@ export default function CoursesPage() {
       </div>
 
       <section className="container mx-auto py-8 px-4 md:px-6 lg:px-8 ">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {/* <div className="bg-gray-800 shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition-colors h-full">
-            <img
-              alt="Course Image"
-              className="rounded-lg w-full h-40 object-cover"
-              height={150}
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "200/150",
-                objectFit: "cover",
-              }}
-              width={200}
-            />
-            <h3 className="text-lg font-semibold line-clamp-2 text-center">Introduction to Web Development</h3>
-            <div className="flex items-center gap-1 text-yellow-500">
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5 text-gray-600" />
-              <span className="text-gray-400 text-sm">(4.5)</span>
-            </div>
-            <p className="text-gray-400 text-sm">$99.99</p>
-            <Link className="w-full" href="#">
-              <Button className="w-full" variant="outline">
-                View Details
-              </Button>
-            </Link>
-          </div> */}
-          <div className="bg-gray-800 shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition-colors h-full">
-            <img
-              alt="Course Image"
-              className="rounded-lg w-full h-40 object-cover"
-              height={150}
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "200/150",
-                objectFit: "cover",
-              }}
-              width={200}
-            />
-            <h3 className="text-lg font-semibold line-clamp-2 text-center">
-              Advanced JavaScript Concepts
-            </h3>
-            <div className="flex items-center gap-1 text-yellow-500">
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5 text-gray-600" />
-              <span className="text-gray-400 text-sm">(4.2)</span>
-            </div>
-            <p className="text-gray-400 text-sm">$149.99</p>
-            <Link className="w-full" href="#">
-              <Button className="w-full" variant="outline">
-                View Details
-              </Button>
-            </Link>
-          </div>
-          <div className="bg-gray-800 shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition-colors h-full">
-            <img
-              alt="Course Image"
-              className="rounded-lg w-full h-40 object-cover"
-              height={150}
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "200/150",
-                objectFit: "cover",
-              }}
-              width={200}
-            />
-            <h3 className="text-lg font-semibold line-clamp-2 text-center">
-              React.js Fundamentals
-            </h3>
-            <div className="flex items-center gap-1 text-yellow-500">
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <span className="text-gray-400 text-sm">(5.0)</span>
-            </div>
-            <p className="text-gray-400 text-sm">$199.99</p>
-            <Link className="w-full" href="#">
-              <Button className="w-full" variant="outline">
-                View Details
-              </Button>
-            </Link>
-          </div>
-          <div className="bg-gray-800 shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition-colors h-full">
-            <img
-              alt="Course Image"
-              className="rounded-lg w-full h-40 object-cover"
-              height={150}
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "200/150",
-                objectFit: "cover",
-              }}
-              width={200}
-            />
-            <h3 className="text-lg font-semibold line-clamp-2 text-center">
-              Python for Data Science
-            </h3>
-            <div className="flex items-center gap-1 text-yellow-500">
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5 text-gray-600" />
-              <span className="text-gray-400 text-sm">(4.3)</span>
-            </div>
-            <p className="text-gray-400 text-sm">$129.99</p>
-            <Link className="w-full" href="#">
-              <Button className="w-full" variant="outline">
-                View Details
-              </Button>
-            </Link>
-          </div>
-          <div className="bg-gray-800 shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition-colors h-full">
-            <img
-              alt="Course Image"
-              className="rounded-lg w-full h-40 object-cover"
-              height={150}
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "200/150",
-                objectFit: "cover",
-              }}
-              width={200}
-            />
-            <h3 className="text-lg font-semibold line-clamp-2 text-center">
-              Machine Learning Fundamentals
-            </h3>
-            <div className="flex items-center gap-1 text-yellow-500">
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5 text-gray-600" />
-              <span className="text-gray-400 text-sm">(4.4)</span>
-            </div>
-            <p className="text-gray-400 text-sm">$179.99</p>
-            <Link className="w-full" href="#">
-              <Button className="w-full" variant="outline">
-                View Details
-              </Button>
-            </Link>
-          </div>
-          <div className="bg-gray-800 shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-700 transition-colors h-full">
-            <img
-              alt="Course Image"
-              className="rounded-lg w-full h-40 object-cover"
-              height={150}
-              src="/placeholder.svg"
-              style={{
-                aspectRatio: "200/150",
-                objectFit: "cover",
-              }}
-              width={200}
-            />
-            <h3 className="text-lg font-semibold line-clamp-2 text-center">
-              Ethical Hacking Essentials
-            </h3>
-            <div className="flex items-center gap-1 text-yellow-500">
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5" />
-              <StarIcon className="w-5 h-5 text-gray-600" />
-              <span className="text-gray-400 text-sm">(4.6)</span>
-            </div>
-            <p className="text-gray-400 text-sm">$249.99</p>
-            <Link className="w-full" href="#">
-              <Button className="w-full" variant="outline">
-                View Details
-              </Button>
-            </Link>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {!courses &&
+              courses.map((course: any) => (
+                <CourseCard
+                  key={course.id}
+                  courseId={course.id}
+                  courseName={course.name}
+                  courseRating={course.rating}
+                />
+              ))}
+            {!courses && courses.length === 0 && (
+              <p className="text-center text-gray-400">No courses found.</p>
+            )}
           </div>
         </div>
       </section>
+      <button className="fixed bottom-6 right-6 bg-gray-800 hover:bg-gray-700 text-white rounded-full p-3 shadow-md transition-colors">
+        <ArrowUpIcon className="w-6 h-6" />
+        <span className="sr-only">Back to top</span>
+      </button>
     </main>
+  );
+}
+
+function ArrowUpIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m5 12 7-7 7 7" />
+      <path d="M12 19V5" />
+    </svg>
   );
 }
 
@@ -324,25 +175,6 @@ function SearchIcon(props: any) {
     >
       <circle cx="11" cy="11" r="8" />
       <path d="m21 21-4.3-4.3" />
-    </svg>
-  );
-}
-
-function StarIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
   );
 }
