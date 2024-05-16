@@ -77,13 +77,6 @@ export default async function StudentPage() {
       <section className="container mx-auto py-8 px-4 md:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         <Link
           className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
-          href="/student/enrolled-courses"
-        >
-          <BookIcon className="w-8 h-8 text-gray-600" />
-          <span className="text-gray-700 font-medium">MY ENROLLED COURSES</span>
-        </Link>
-        <Link
-          className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
           href="/student/courses"
         >
           <BookOpenIcon className="w-8 h-8 text-gray-600" />
