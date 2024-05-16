@@ -48,6 +48,10 @@ public class EnrollRequestApi {
       return Response.status(Response.Status.NOT_FOUND).entity("Course not found").build();
     }
 
+    if (courseRepo.findCourseById(request.getEnrollment().getCourseId()).getCapacity() == 0) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Course is full").build();
+    }
+
     if (request.getJwt() == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }

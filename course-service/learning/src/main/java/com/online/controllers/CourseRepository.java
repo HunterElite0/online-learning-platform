@@ -183,4 +183,18 @@ public class CourseRepository {
     }
   }
 
+  public boolean decrementCapacity(long id) {
+    try {
+      Course course = em.find(Course.class, id);
+      if (course != null && course.getCapacity() > 0) {
+        course.setCapacity(course.getCapacity() - 1);
+        em.merge(course);
+        return true;
+      }
+      return false;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
 }

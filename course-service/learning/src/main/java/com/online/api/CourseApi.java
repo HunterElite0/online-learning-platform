@@ -214,4 +214,14 @@ public class CourseApi {
     return Response.ok(result).build();
   }
 
+  @GET
+  @Path("/{id}")
+  public Response getCourseById(@PathParam("id") long id) {
+    Course course = repository.findCourseById(id);
+    if (course == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    return Response.ok(course).build();
+  }
+
 }

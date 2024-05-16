@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.jose4j.jwt.JwtClaims;
 
+import com.online.controllers.CourseRepository;
 import com.online.controllers.EnrollmentRepository;
 import com.online.controllers.NotificationRepository;
 import com.online.model.Enrollment;
@@ -33,6 +34,9 @@ public class EnrollmentApi {
   @EJB
   private NotificationRepository notificationRepo;
 
+  @EJB 
+  private CourseRepository courseRepo;
+
   JwtParser jwtParser = new JwtParser();
 
   @PUT
@@ -57,7 +61,10 @@ public class EnrollmentApi {
     if (response != null) {
       Enrollment enrollment = enrollmentRepo.getEnrollmentById(id);
       notificationRepo.makeNotification(enrollment.getStudentId(), "Enrollment accepted");
-
+      
+      courseRepo.decrementCapacity(enrollment.getCourseId());
+      
+      
       return Response.ok(response).build();
     }
     return Response.serverError().build();

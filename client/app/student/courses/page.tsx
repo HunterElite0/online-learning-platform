@@ -39,8 +39,10 @@ export default function CoursesPage() {
     let updatedCourses = [...courses];
 
     if (searchQuery) {
-      updatedCourses = updatedCourses.filter((course) =>
-        course.name.toLowerCase().includes(searchQuery.toLowerCase())
+      updatedCourses = updatedCourses.filter(
+        (course) =>
+          course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          course.category.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -113,6 +115,7 @@ export default function CoursesPage() {
                 key={course.id}
                 courseId={course.id}
                 courseName={course.name}
+                courseCategory={course.category}
                 courseRating={course.rating}
               />
             ))

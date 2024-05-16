@@ -1,7 +1,17 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-const CourseCard = ({ courseId, courseName, courseRating }: { courseId: string, courseName: string, courseRating: number }) => {
+const CourseCard = ({
+  courseId,
+  courseName,
+  courseRating,
+  courseCategory,
+}: {
+  courseId: string;
+  courseName: string;
+  courseRating: number;
+  courseCategory: string;
+}) => {
   const stars = Array.from({ length: 5 }, (_, i) => (
     <StarIcon
       key={i}
@@ -16,6 +26,7 @@ const CourseCard = ({ courseId, courseName, courseRating }: { courseId: string, 
       <h3 className="text-lg font-semibold line-clamp-2 text-center">
         {courseName}
       </h3>
+      <p className="text-gray-400 text-sm">Category: {courseCategory}</p>
       <div className="flex items-center gap-1 text-yellow-500">
         {stars}
         <span className="text-gray-400 text-sm">({courseRating})</span>

@@ -13,8 +13,9 @@ import { Input } from "@/components/ui/input";
 import { CourseCard } from "@/components/course-card";
 import { useState, useEffect } from "react";
 
-async function getAllCourses() {
-  const URL: string = "http://localhost:8080/learning/course/courses";
+async function getAllCourses(id: number) {
+  // const URL: string = "http://course-service:8080/learning/course/courses/";
+  const URL: string = "http://localhost:8080/learning/course/courses/" + id;
   const res = await fetch(URL);
   const response = await res.json();
   return response;
@@ -25,10 +26,11 @@ export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("rating");
   const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
+  const cookies = require("js-cookie");
 
   useEffect(() => {
     const fetchCourses = async () => {
-      const coursesData = await getAllCourses();
+      const coursesData = await getAllCourses(cookies.get("id"));
       setCourses(coursesData);
       setFilteredCourses(coursesData);
     };
@@ -39,8 +41,10 @@ export default function CoursesPage() {
     let updatedCourses = [...courses];
 
     if (searchQuery) {
-      updatedCourses = updatedCourses.filter((course) =>
-        course.name.toLowerCase().includes(searchQuery.toLowerCase())
+      updatedCourses = updatedCourses.filter(
+        (course) =>
+          course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          course.category.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -109,12 +113,16 @@ export default function CoursesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredCourses.length > 0 ? (
             filteredCourses.map((course: any) => (
-              <CourseCard
-                key={course.id}
-                courseId={course.id}
-                courseName={course.name}
-                courseRating={course.rating}
-              />
+              <div>
+                <CourseCard
+                  key={course.id}
+                  courseId={course.id}
+                  courseName={course.name}
+                  courseCategory={course.category}
+                  courseRating={course.rating}
+                />
+                <p>Status: {course.status}</p>
+              </div>
             ))
           ) : (
             <p className="text-center text-gray-400">No courses found.</p>
