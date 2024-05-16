@@ -61,7 +61,6 @@ public class EnrollmentApi {
     if (response != null) {
       Enrollment enrollment = enrollmentRepo.getEnrollmentById(id);
       notificationRepo.makeNotification(enrollment.getStudentId(), "Enrollment accepted");
-      
       courseRepo.decrementCapacity(enrollment.getCourseId());
       
       

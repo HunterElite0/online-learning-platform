@@ -30,8 +30,20 @@ public class NotificationRepository {
     try {
       TypedQuery<Notification> query = em.createQuery("SELECT n FROM Notification n WHERE n.studentId = :studentId",
           Notification.class);
-      query.setParameter("studentId", studentId);
+      query.setParameter("studentId", studentId); 
       return query.getResultList();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public List<Notification> getNotifications() {
+    try {
+      TypedQuery<Notification> query = em.createQuery("SELECT * FROM Notification",
+          Notification.class);
+      List<Notification> l = query.getResultList() ;
+      System.out.println(l); 
+      return l;
     } catch (Exception e) {
       return null;
     }
