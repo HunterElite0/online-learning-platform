@@ -1,8 +1,3 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/arW9EEAcDyU
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
 import Link from "next/link";
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,12 +13,16 @@ import { cookies } from "next/headers";
 
 async function getAccountDetails(id: number) {
   // const URL : string = "http://account-service:8081/account/user/" + id;
-  const URL : string = "http://localhost:8081/account/user/" + id;
-  const res = await fetch(URL);
-  const response = await res.json();
-  const accountDetails: any = response;
-  // console.log(accountDetails);
-  return accountDetails.name;
+  const URL: string = "http://localhost:8081/account/user/" + id;
+  try {
+    const res = await fetch(URL);
+    const response = await res.json();
+    const accountDetails: any = response;
+    // console.log(accountDetails);
+    return accountDetails.name;
+  } catch (error) {
+    return null;
+  }
 }
 
 function getInitials(name: string) {
@@ -44,6 +43,9 @@ export default async function InstructorPage() {
   const accountDetails: string = await getAccountDetails(
     id as unknown as number
   );
+  if (!accountDetails) {
+    return <div>Failed to fetch account</div>;
+  }
   const initials = getInitials(accountDetails);
 
   return (

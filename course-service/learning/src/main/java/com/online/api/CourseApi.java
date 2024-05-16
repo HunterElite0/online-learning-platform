@@ -10,6 +10,7 @@ import jakarta.ejb.Stateless;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -132,7 +133,7 @@ public class CourseApi {
 
   @PUT
   @Path("/accept/{id}")
-  public Response acceptCourseById(String jwt, @PathParam("id") long id) {
+  public Response acceptCourseById(@PathParam("id") long id, @HeaderParam("jwt") String jwt){
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -156,7 +157,7 @@ public class CourseApi {
 
   @PUT
   @Path("/reject/{id}")
-  public Response rejectCourseById(String jwt, @PathParam("id") long id) {
+  public Response rejectCourseById(@PathParam("id") long id, @HeaderParam("jwt") String jwt){
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -181,7 +182,7 @@ public class CourseApi {
 
   @DELETE
   @Path("/remove/{id}")
-  public Response removeCourseById(String jwt, @PathParam("id") long id) {
+  public Response removeCourseById(@PathParam("id") long id, @HeaderParam("jwt") String jwt){
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }

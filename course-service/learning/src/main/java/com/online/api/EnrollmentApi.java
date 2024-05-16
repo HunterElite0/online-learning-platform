@@ -13,6 +13,7 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -36,7 +37,7 @@ public class EnrollmentApi {
 
   @PUT
   @Path("/accept/{id}")
-  public Response acceptEnrollment(String jwt, @PathParam("id") long id) {
+  public Response acceptEnrollment(@PathParam("id") long id, @HeaderParam("jwt") String jwt){
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -64,7 +65,7 @@ public class EnrollmentApi {
 
   @PUT
   @Path("/reject/{id}")
-  public Response rejectEnrollment(String jwt, @PathParam("id") long id) {
+  public Response rejectEnrollment(@PathParam("id") long id, @HeaderParam("jwt") String jwt){
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -102,7 +103,7 @@ public class EnrollmentApi {
 
   @GET
   @Path("/student-list")
-  public Response getEnrollmentsByStudentId(String jwt) {
+  public Response getEnrollmentsByStudentId(@HeaderParam("jwt") String jwt) {
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -127,8 +128,8 @@ public class EnrollmentApi {
   }
 
   @GET
-  @Path("/instuctor-list")
-  public Response getEnrollmentsByInstructorId(String jwt) {
+  @Path("/instructor-list")
+  public Response getEnrollmentsByInstructorId(@HeaderParam("jwt") String jwt) {
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();

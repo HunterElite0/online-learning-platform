@@ -12,6 +12,7 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
@@ -28,9 +29,8 @@ public class NotificationApi {
 
   JwtParser jwtParser = new JwtParser();
 
-  @Path("/{studentId}")
   @GET
-  public Response getNotificationsByStudentId(String jwt) {
+  public Response getNotificationsByStudentId(@HeaderParam("jwt") String jwt){
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();

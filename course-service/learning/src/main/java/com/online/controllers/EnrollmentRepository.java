@@ -24,7 +24,6 @@ public class EnrollmentRepository {
       em.persist(obj);
       return "Enrollment request sent!";
     } catch (Exception e) {
-      e.printStackTrace();
       return "Enrollment request failed!";
     }
   }
@@ -101,7 +100,9 @@ public class EnrollmentRepository {
   public List<Enrollment> getEnrollmentsByInstructorId(long instructorId) {
     try {
       TypedQuery<Enrollment> query = em
-          .createQuery("SELECT e FROM Enrollment e WHERE e.instructorId = :instructorId", Enrollment.class)
+          .createQuery(
+              "SELECT e FROM Enrollment e JOIN Course c ON e.courseId = c.id WHERE c.instructorId = :instructorId AND e.status = 'PENDING'",
+              Enrollment.class)
           .setParameter("instructorId", instructorId);
       return query.getResultList();
     } catch (Exception e) {

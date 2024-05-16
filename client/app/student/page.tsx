@@ -14,11 +14,15 @@ import { cookies } from "next/headers";
 async function getAccountDetails(id: number) {
   // const URL : string = "http://account-service:8081/account/user/" + id;
   const URL: string = "http://localhost:8081/account/user/" + id;
-  const res = await fetch(URL);
-  const response = await res.json();
-  const accountDetails: any = response;
-  // console.log(accountDetails);
-  return accountDetails.name;
+  try {
+    const res = await fetch(URL);
+    const response = await res.json();
+    const accountDetails: any = response;
+    // console.log(accountDetails);
+    return accountDetails.name;
+  } catch (error) {
+    return null;
+  }
 }
 
 function getInitials(name: string) {
@@ -39,6 +43,9 @@ export default async function StudentPage() {
   const accountDetails: string = await getAccountDetails(
     id as unknown as number
   );
+  if (!accountDetails) {
+    return <div>Failed to fetch account</div>;
+  }
   const initials = getInitials(accountDetails);
 
   return (

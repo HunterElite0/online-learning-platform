@@ -70,7 +70,7 @@ public class RatingApi {
     boolean updated = courseRepo.updateCourseRating(request.getRating().getCourseId(), request.getRating().getRating(),
         numberOfRatings);
     if (!updated) {
-      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error submitting course rating2").build();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error submitting course rating").build();
     }
     return Response.ok("Rating submitted!").build();
   }
