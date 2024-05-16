@@ -1,7 +1,6 @@
-"use client";
+"use client"
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
 async function getCourseDetails(id: number) {
   const URL = "http://localhost:8080/learning/course/" + id;
@@ -18,34 +17,6 @@ async function getCourseDetails(id: number) {
   }
 }
 
-const handleEnroll = async (id: number) => {
-  const URL = "http://localhost:8080/learning/enroll/";
-  // const URL = "http://course-service:8080/learning/enroll/";
-  const cookie = require("js-cookie");
-  const payload = {
-    jwt: cookie.get("jwt"),
-    enrollment: {
-      courseId: id,
-    },
-  };
-  const response = await fetch(URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
-  if (response.ok) {
-    alert("Enrolled request sent successfully");
-    window.location.href = "/student/courses";
-    return;
-  } else {
-    alert("Enrolled request failed");
-    window.location.href = "/student/courses";
-    return;
-  }
-};
-
 export default async function Component({
   params,
 }: {
@@ -58,7 +29,7 @@ export default async function Component({
       <header className="py-4 px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Link className="flex items-center gap-2" href="/student/courses">
+            <Link className="flex items-center gap-2" href="/instructor/courses">
               <ArrowLeftIcon className="w-5 h-5" />
               <h1 className="text-2xl font-bold">Course Details</h1>
             </Link>
@@ -87,14 +58,6 @@ export default async function Component({
             <div className="flex-1">
               <h3 className="text-xl font-bold mb-2">Course Content</h3>
               <p>{course.content}</p>
-            </div>
-            <div className="flex justify-center">
-              <Button
-                onClick={() => handleEnroll(course.id)}
-                className="px-8 py-3 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-md"
-              >
-                Enroll
-              </Button>
             </div>
           </div>
         </div>

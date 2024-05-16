@@ -10,11 +10,11 @@ import {
   DropdownMenuRadioGroup,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { CourseCard } from "@/components/course-card";
+import { CourseCardIns } from "@/components/course-card-ins";
 import { useState, useEffect } from "react";
 
 async function getAllCourses(id: number) {
-  // const URL: string = "http://course-service:8080/learning/course/courses/";
+  // const URL: string = "http://course-service:8080/learning/course/courses/" + id;
   const URL: string = "http://localhost:8080/learning/course/courses/" + id;
   const res = await fetch(URL);
   const response = await res.json();
@@ -114,7 +114,7 @@ export default function CoursesPage() {
           {filteredCourses.length > 0 ? (
             filteredCourses.map((course: any) => (
               <div>
-                <CourseCard
+                <CourseCardIns
                   key={course.id}
                   courseId={course.id}
                   courseName={course.name}

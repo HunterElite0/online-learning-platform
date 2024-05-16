@@ -34,8 +34,6 @@ public class EnrollmentRepository {
       try {
         enrollment.setStatus("ACCEPTED");
         em.merge(enrollment);
-        // notificationRepository.makeNotification(enrollment.getStudentId(),
-        // enrollment.getCourseId(), "Course Enrollment Accepted");
         return "Enrollment accepted successfuly!";
       } catch (Exception e) {
         return null;
