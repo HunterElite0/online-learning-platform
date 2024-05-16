@@ -33,6 +33,12 @@ const handleAccept = async (enrollmentId: number) => {
       jwt: jwt,
     },
   });
+  if (response.ok) {
+    alert("Enrollment accepted");
+    window.location.href = "/instructor/enrollments";
+  } else {
+    alert("Failed to accept enrollment");
+  }
 };
 
 const handleReject = async (enrollmentId: number) => {
@@ -47,6 +53,12 @@ const handleReject = async (enrollmentId: number) => {
       jwt: jwt,
     },
   });
+  if (response.ok) {
+    alert("Enrollment rejected");
+    window.location.href = "/instructor/enrollments";
+  } else {
+    alert("Failed to reject enrollment");
+  }
 };
 
 export default function EnrollmentsPage() {

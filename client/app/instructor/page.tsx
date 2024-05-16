@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
+import { AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenuTrigger,
@@ -10,6 +10,7 @@ import {
   DropdownMenu,
 } from "@/components/ui/dropdown-menu";
 import { cookies } from "next/headers";
+import { UserDropdown } from "@/components/account-dropdown";
 
 async function getAccountDetails(id: number) {
   // const URL : string = "http://account-service:8081/account/user/" + id;
@@ -53,24 +54,7 @@ export default async function InstructorPage() {
       <header className="bg-gray-950 text-white py-4 px-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Instructor Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className="rounded-full" size="icon" variant="ghost">
-                  <Avatar>
-                    <AvatarFallback>{initials}</AvatarFallback>
-                  </Avatar>
-                  <span className="sr-only">Toggle user menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{accountDetails}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Account Settings</DropdownMenuItem>
-                <DropdownMenuItem>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <UserDropdown initials={initials} accountDetails={accountDetails} />
         </div>
       </header>
       <section className="container mx-auto py-8 px-4 md:px-6 lg:px-8">

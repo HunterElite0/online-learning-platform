@@ -1,15 +1,6 @@
-import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenu,
-} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { cookies } from "next/headers";
+import { UserDropdown } from "@/components/account-dropdown";
 
 async function getAccountDetails(id: number) {
   // const URL : string = "http://account-service:8081/account/user/" + id;
@@ -34,6 +25,14 @@ function getInitials(name: string) {
   return initials || "N/A";
 }
 
+const handleLogout = () => {
+  const cookie = require("js-cookie");
+  cookie.remove("id");
+  cookie.remove("jwt");
+  cookie.remove("role");
+  window.location.href = "/";
+};
+
 export default async function StudentPage() {
   const cookieStore = cookies();
   const id = cookieStore.get("id")?.value;
@@ -53,27 +52,13 @@ export default async function StudentPage() {
       <header className="bg-gray-950 text-white py-4 px-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold">Student Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button className="rounded-full" size="icon" variant="ghost">
-                  <Avatar>
-                    <AvatarFallback>{initials}</AvatarFallback>
-                  </Avatar>
-                  <span className="sr-only">Toggle user menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>{accountDetails}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Account Settings</DropdownMenuItem>
-                <DropdownMenuItem>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <UserDropdown
+            initials={initials}
+            accountDetails={accountDetails}
+          />
         </div>
       </header>
-      <section className="container mx-auto py-8 px-4 md:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      <section className="container mx-auto py-8 px-4 md:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         <Link
           className="bg-white shadow-md rounded-lg p-4 flex flex-col items-center justify-center gap-2 hover:bg-gray-100 transition-colors"
           href="/student/courses"
@@ -116,25 +101,6 @@ function BellIcon(props: any) {
     >
       <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
       <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-    </svg>
-  );
-}
-
-function BookIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
     </svg>
   );
 }
