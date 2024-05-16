@@ -22,6 +22,7 @@ const handleEnroll = async (id: number) => {
   const URL = "http://localhost:8080/learning/enroll/";
   // const URL = "http://course-service:8080/learning/enroll/";
   const cookie = require("js-cookie");
+  const router = require("next/navigation");
   const payload = {
     jwt: cookie.get("jwt"),
     enrollment: {
@@ -36,7 +37,13 @@ const handleEnroll = async (id: number) => {
     body: JSON.stringify(payload),
   });
   if (response.ok) {
-    alert("Enrolled successfully");
+    alert("Enrolled request sent successfully");
+    router.push("/student/courses");
+    return;
+  } else {
+    alert("Enrolled request failed");
+    router.push("/student/courses");
+    return;
   }
 };
 

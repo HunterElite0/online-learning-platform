@@ -37,16 +37,4 @@ public class NotificationRepository {
     }
   }
 
-  public List<Notification> getNotifications() {
-    try {
-      TypedQuery<Notification> query = em.createQuery("SELECT * FROM Notification",
-          Notification.class);
-      List<Notification> l = query.getResultList() ;
-      System.out.println(l); 
-      return l;
-    } catch (Exception e) {
-      return null;
-    }
-  }
-
 }

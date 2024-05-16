@@ -60,7 +60,7 @@ public class EnrollmentApi {
     String response = enrollmentRepo.acceptEnrollment(id);
     if (response != null) {
       Enrollment enrollment = enrollmentRepo.getEnrollmentById(id);
-      notificationRepo.makeNotification(enrollment.getStudentId(), "Enrollment accepted");
+      notificationRepo.makeNotification(enrollment.getStudentId(), "Enrollment accepted for course " + enrollment.getCourseId());
       courseRepo.decrementCapacity(enrollment.getCourseId());
       
       
@@ -90,7 +90,7 @@ public class EnrollmentApi {
     String response = enrollmentRepo.rejectEnrollment(id);
     if (response != null) {
       Enrollment enrollment = enrollmentRepo.getEnrollmentById(id);
-      notificationRepo.makeNotification(enrollment.getStudentId(), "Enrollment rejected");
+      notificationRepo.makeNotification(enrollment.getStudentId(), "Enrollment rejected for course " + enrollment.getCourseId());
 
       return Response.ok(response).build();
     }

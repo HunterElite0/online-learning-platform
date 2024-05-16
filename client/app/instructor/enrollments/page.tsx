@@ -17,7 +17,7 @@ async function fetchEnrollments(token: string) {
     const enrollments = await response.json();
     return enrollments;
   }
-  console.log(response);
+  // console.log(response);
   return [];
 }
 

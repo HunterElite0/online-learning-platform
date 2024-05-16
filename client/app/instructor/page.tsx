@@ -58,7 +58,6 @@ export default async function InstructorPage() {
               <DropdownMenuTrigger asChild>
                 <Button className="rounded-full" size="icon" variant="ghost">
                   <Avatar>
-                    <AvatarImage alt="@shadcn" src="/placeholder-avatar.jpg" />
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                   <span className="sr-only">Toggle user menu</span>

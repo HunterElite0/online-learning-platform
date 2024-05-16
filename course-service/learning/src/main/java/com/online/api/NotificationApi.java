@@ -50,25 +50,4 @@ public class NotificationApi {
     }
     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error fetching notifications").build();
   }
-
-  @GET
-  @Path("/all")
-  public Response getNotifications(@HeaderParam("jwt") String jwt){
-
-    if (jwt == null) {
-      return Response.status(Response.Status.UNAUTHORIZED).build();
-    }
-
-    JwtClaims claims = jwtParser.parseClaims(jwt);
-    if (claims == null) {
-      System.out.println("Claims are null");
-      return Response.status(Response.Status.UNAUTHORIZED).build();
-    }
-
-    List<Notification> notifications = notificationRepo.getNotifications();
-    if (notifications != null) {
-      return Response.ok(notifications).build();
-    }
-    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error fetching notifications").build();
-  }
 }

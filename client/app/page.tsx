@@ -53,7 +53,7 @@ export default function LoginForm() {
       Cookies.set(result.cookie.name, result.cookie.token);
       Cookies.set("id", claims.id);
       Cookies.set("role", claims.role);
-      console.log(claims);
+      // console.log(claims);
       alert("Login successful!");
 
       if (claims.role.toLowerCase() == "student") {
