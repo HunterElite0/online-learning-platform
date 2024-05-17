@@ -33,6 +33,9 @@ public class Course {
   private Integer capacity;
 
   @Column
+  private Integer enrolled;
+
+  @Column
   private String content;
 
   @Column

@@ -20,7 +20,6 @@ async function getCourseDetails(id: number) {
 
 const handleEnroll = async (id: number) => {
   const URL = "http://localhost:8080/learning/enroll/";
-  // const URL = "http://course-service:8080/learning/enroll/";
   const cookie = require("js-cookie");
   const payload = {
     jwt: cookie.get("jwt"),
@@ -53,6 +52,11 @@ export default async function Component({
 }) {
   const course = await getCourseDetails(params.id);
 
+  const cookies = require("js-cookie");
+  if (cookies.get("role") != "student") {
+    window.location.href = "/";
+  }
+
   return (
     <main key="1" className="flex flex-col min-h-screen bg-gray-950 text-white">
       <header className="py-4 px-6">
@@ -81,7 +85,7 @@ export default async function Component({
             </div>
             <div className="flex items-center justify-between">
               <p className="text-gray-400">
-                Capacity: {course.capacity} students
+                Capacity: {course.enrolled}/{course.capacity} students
               </p>
             </div>
             <div className="flex-1">

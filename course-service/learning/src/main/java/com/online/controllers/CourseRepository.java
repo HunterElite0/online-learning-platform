@@ -26,6 +26,7 @@ public class CourseRepository {
       obj.setRating(0.0);
       obj.setStatus("PENDING");
       obj.setInstructorId(course.getInstructorId()); // From jwt token
+      obj.setEnrolled(0);
       em.persist(obj);
       return obj;
     } catch (Exception e) {
@@ -183,11 +184,11 @@ public class CourseRepository {
     }
   }
 
-  public boolean decrementCapacity(long id) {
+  public boolean updateEnrolled(long id) {
     try {
       Course course = em.find(Course.class, id);
-      if (course != null && course.getCapacity() > 0) {
-        course.setCapacity(course.getCapacity() - 1);
+      if (course != null && course.getEnrolled() < course.getCapacity()) {
+        course.setEnrolled(course.getEnrolled() + 1);
         em.merge(course);
         return true;
       }

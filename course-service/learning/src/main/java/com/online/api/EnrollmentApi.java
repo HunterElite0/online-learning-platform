@@ -34,14 +34,14 @@ public class EnrollmentApi {
   @EJB
   private NotificationRepository notificationRepo;
 
-  @EJB 
+  @EJB
   private CourseRepository courseRepo;
 
   JwtParser jwtParser = new JwtParser();
 
   @PUT
   @Path("/accept/{id}")
-  public Response acceptEnrollment(@PathParam("id") long id, @HeaderParam("jwt") String jwt){
+  public Response acceptEnrollment(@PathParam("id") long id, @HeaderParam("jwt") String jwt) {
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -60,10 +60,10 @@ public class EnrollmentApi {
     String response = enrollmentRepo.acceptEnrollment(id);
     if (response != null) {
       Enrollment enrollment = enrollmentRepo.getEnrollmentById(id);
-      notificationRepo.makeNotification(enrollment.getStudentId(), "Enrollment accepted for course " + enrollment.getCourseId());
-      courseRepo.decrementCapacity(enrollment.getCourseId());
-      
-      
+      notificationRepo.makeNotification(enrollment.getStudentId(),
+          "Enrollment accepted for course " + enrollment.getCourseId());
+      courseRepo.updateEnrolled(enrollment.getCourseId());
+
       return Response.ok(response).build();
     }
     return Response.serverError().build();
@@ -71,7 +71,7 @@ public class EnrollmentApi {
 
   @PUT
   @Path("/reject/{id}")
-  public Response rejectEnrollment(@PathParam("id") long id, @HeaderParam("jwt") String jwt){
+  public Response rejectEnrollment(@PathParam("id") long id, @HeaderParam("jwt") String jwt) {
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -90,7 +90,8 @@ public class EnrollmentApi {
     String response = enrollmentRepo.rejectEnrollment(id);
     if (response != null) {
       Enrollment enrollment = enrollmentRepo.getEnrollmentById(id);
-      notificationRepo.makeNotification(enrollment.getStudentId(), "Enrollment rejected for course " + enrollment.getCourseId());
+      notificationRepo.makeNotification(enrollment.getStudentId(),
+          "Enrollment rejected for course " + enrollment.getCourseId());
 
       return Response.ok(response).build();
     }

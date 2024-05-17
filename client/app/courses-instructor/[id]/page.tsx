@@ -1,10 +1,9 @@
-"use client"
+"use client";
 
 import Link from "next/link";
 
 async function getCourseDetails(id: number) {
   const URL = "http://localhost:8080/learning/course/" + id;
-  // const URL = "http://course-service:8080/learning/courses/" + id;
   const response = await fetch(URL, {
     method: "GET",
     headers: {
@@ -24,12 +23,20 @@ export default async function Component({
 }) {
   const course = await getCourseDetails(params.id);
 
+  const cookies = require("js-cookie");
+  if (cookies.get("role") != "instructor") {
+    window.location.href = "/";
+  }
+
   return (
     <main key="1" className="flex flex-col min-h-screen bg-gray-950 text-white">
       <header className="py-4 px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Link className="flex items-center gap-2" href="/instructor/courses">
+            <Link
+              className="flex items-center gap-2"
+              href="/instructor/courses"
+            >
               <ArrowLeftIcon className="w-5 h-5" />
               <h1 className="text-2xl font-bold">Course Details</h1>
             </Link>
@@ -52,7 +59,7 @@ export default async function Component({
             </div>
             <div className="flex items-center justify-between">
               <p className="text-gray-400">
-                Capacity: {course.capacity} students
+                Capacity: {course.enrolled}/{course.capacity} students
               </p>
             </div>
             <div className="flex-1">
