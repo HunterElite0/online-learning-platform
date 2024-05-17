@@ -77,26 +77,48 @@ export default async function AdminPage() {
       </section>
       <section className="container mx-auto py-8 px-4 md:px-6 lg:px-8 flex-1 grid grid-cols-1 lg:grid-cols-1 gap-8">
         <div className="bg-gray-800 shadow-md rounded-lg p-6 flex flex-col gap-4 mx-auto w-full">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Statistics</h2>
-          </div>
-          <div className="flex items-center justify-between gap-4">
-            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center flex-1">
-              <UsersIcon className="h-8 w-8 mb-2" />
-              <h3 className="text-xl font-bold">Students</h3>
-              <p className="text-4xl font-bold">1,234</p>
-            </div>
-            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center flex-1">
-              <SchoolIcon className="h-8 w-8 mb-2" />
-              <h3 className="text-xl font-bold">Instructors</h3>
-              <p className="text-4xl font-bold">78</p>
-            </div>
-            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center flex-1">
-              <BookIcon className="h-8 w-8 mb-2" />
-              <h3 className="text-xl font-bold">Courses</h3>
-              <p className="text-4xl font-bold">45</p>
-            </div>
-          </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+          <UsersIcon className="h-8 w-8 mb-2 text-gray-50" />
+          <h3 className="text-xl font-bold text-gray-50">Students</h3>
+          <p className="text-4xl font-bold text-gray-50">1,234</p>
+        </div>
+        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+          <SchoolIcon className="h-8 w-8 mb-2 text-gray-50" />
+          <h3 className="text-xl font-bold text-gray-50">Instructors</h3>
+          <p className="text-4xl font-bold text-gray-50">78</p>
+        </div>
+        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+          <h3 className="text-xl font-bold text-gray-50">Courses</h3>
+          <p className="text-4xl font-bold text-gray-50">45</p>
+        </div>
+        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+          <h3 className="text-xl font-bold text-gray-50">Admins</h3>
+          <p className="text-4xl font-bold text-gray-50">1</p>
+        </div>
+        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+          <h3 className="text-xl font-bold text-gray-50">Accepted Courses</h3>
+          <p className="text-4xl font-bold text-gray-50">1</p>
+        </div>
+        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+          <h3 className="text-xl font-bold text-gray-50">Rejected Courses</h3>
+          <p className="text-4xl font-bold text-gray-50">1</p>
+        </div>
+        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+          <h3 className="text-xl font-bold text-gray-50">Pending Courses</h3>
+          <p className="text-4xl font-bold text-gray-50">0</p>
+        </div>
+        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+          <h3 className="text-xl font-bold text-gray-50">Courses</h3>
+          <p className="text-4xl font-bold text-gray-50">45</p>
+        </div>
+      </div>
         </div>
       </section>
     </main>
@@ -186,4 +208,25 @@ function UsersIcon(props: any) {
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
   );
+}
+
+function BarChartIcon(props : any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="12" x2="12" y1="20" y2="10" />
+      <line x1="18" x2="18" y1="20" y2="4" />
+      <line x1="6" x2="6" y1="20" y2="16" />
+    </svg>
+  )
 }
