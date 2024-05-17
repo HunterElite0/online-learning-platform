@@ -98,6 +98,31 @@ public class CourseApi {
   }
 
   @GET
+  @Path("/pending")
+  public Response getPendingCourses(@HeaderParam("jwt") String jwt) {
+
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    JwtClaims claims = jwtParser.parseClaims(jwt);
+    if (claims == null) {
+      System.out.println("Claims are null");
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("admin")) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    List<Course> courses = repository.listAllPendingCourses();
+    if (courses == null) {
+      return Response.serverError().build();
+    }
+    return Response.ok(courses).build();
+  }
+
+  @GET
   @Path("/search/{searchTerm}")
   public Response getCourseByTerm(@PathParam("searchTerm") String searchTerm) {
     List<Course> courses = repository.findCourses(searchTerm);
@@ -108,8 +133,8 @@ public class CourseApi {
   }
 
   @PUT
-  @Path("/update/{id}")
-  public Response updateCourse(@PathParam("id") long id, CourseRequest request) {
+  @Path("/update")
+  public Response updateCourse(CourseRequest request) {
     if (request.getJwt() == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -120,11 +145,11 @@ public class CourseApi {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("instructor")) {
+    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("admin")) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
-    String response = repository.updateCourse(id, request.getCourse());
+    String response = repository.updateCourse(request.getCourse().getId(), request.getCourse());
     if (response == null) {
       return Response.serverError().build();
     }
@@ -133,7 +158,7 @@ public class CourseApi {
 
   @PUT
   @Path("/accept/{id}")
-  public Response acceptCourseById(@PathParam("id") long id, @HeaderParam("jwt") String jwt){
+  public Response acceptCourseById(@PathParam("id") long id, @HeaderParam("jwt") String jwt) {
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }
@@ -157,7 +182,7 @@ public class CourseApi {
 
   @PUT
   @Path("/reject/{id}")
-  public Response rejectCourseById(@PathParam("id") long id, @HeaderParam("jwt") String jwt){
+  public Response rejectCourseById(@PathParam("id") long id, @HeaderParam("jwt") String jwt) {
 
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -182,7 +207,7 @@ public class CourseApi {
 
   @DELETE
   @Path("/remove/{id}")
-  public Response removeCourseById(@PathParam("id") long id, @HeaderParam("jwt") String jwt){
+  public Response removeCourseById(@PathParam("id") long id, @HeaderParam("jwt") String jwt) {
     if (jwt == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
     }

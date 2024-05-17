@@ -95,4 +95,14 @@ public class RatingApi {
     return Response.ok(ratings).build();
   }
 
+  @GET
+  @Path("/course/{id}")
+  public Response getRatingsByCourseId(long id) {
+    List<Rating> ratings = ratingRepo.getRatingsByCourseId(id);
+    if (ratings == null) {
+      return Response.serverError().build();
+    }
+    return Response.ok(ratings).build();
+  }
+
 }

@@ -49,4 +49,14 @@ public class RatingRepository {
     }
   }
 
+  public List<Rating> getRatingsByCourseId(long courseId) {
+    try {
+      TypedQuery<Rating> query = em.createQuery("SELECT r FROM Rating r WHERE r.courseId = :courseId", Rating.class);
+      query.setParameter("courseId", courseId);
+      return query.getResultList();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
 }

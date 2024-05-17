@@ -56,7 +56,6 @@ export default function RegisterForm() {
       jwt: cookies.get("jwt"),
     };
     const URL = "http://localhost:8080/learning/course/create";
-    // const URL = "http://course-service:8080/learning/course/create";
     const response = await fetch(
       "http://localhost:8080/learning/course/create",
       {

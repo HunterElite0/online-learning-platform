@@ -6,11 +6,13 @@ const CourseCard = ({
   courseName,
   courseRating,
   courseCategory,
+  link,
 }: {
   courseId: string;
   courseName: string;
   courseRating: number;
   courseCategory: string;
+  link: string;
 }) => {
   const stars = Array.from({ length: 5 }, (_, i) => (
     <StarIcon
@@ -31,7 +33,7 @@ const CourseCard = ({
         {stars}
         <span className="text-gray-400 text-sm">({courseRating})</span>
       </div>
-      <Link className="w-full" href={`/courses/${courseId}`}>
+      <Link className="w-full" href={link}>
         <Button className="w-full" variant="outline">
           View Details
         </Button>

@@ -198,4 +198,13 @@ public class CourseRepository {
     }
   }
 
+  public List<Course> listAllPendingCourses() {
+    try {
+      TypedQuery<Course> courses = em.createQuery("SELECT c FROM Course c WHERE c.status = 'PENDING'", Course.class);
+      return courses.getResultList();
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
 }

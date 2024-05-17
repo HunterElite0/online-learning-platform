@@ -10,11 +10,11 @@ import {
   DropdownMenuRadioGroup,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { CourseCard } from "@/components/course-card";
 import { useState, useEffect } from "react";
+import { CourseCard } from "@/components/course-card";
 
-async function getAllCourses() {
-  const URL: string = "http://localhost:8080/learning/course/courses";
+async function getAllCourses(id: number) {
+  const URL: string = "http://localhost:8080/learning/course/courses/";
   const res = await fetch(URL);
   const response = await res.json();
   return response;
@@ -25,10 +25,11 @@ export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("rating");
   const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
+  const cookies = require("js-cookie");
 
   useEffect(() => {
     const fetchCourses = async () => {
-      const coursesData = await getAllCourses();
+      const coursesData = await getAllCourses(cookies.get("id"));
       setCourses(coursesData);
       setFilteredCourses(coursesData);
     };
@@ -66,14 +67,14 @@ export default function CoursesPage() {
       <div className="sticky top-0 py-4 px-6 backdrop-blur-md bg-black/30">
         <header className="py-3 border-b-4">
           <div className="flex items-center justify-between">
-            <Link className="flex items-center gap-2" href="/student">
+            <Link className="flex items-center gap-2" href="/admin">
               <ArrowLeftIcon className="w-5 h-5" />
-              <h1 className="text-2xl font-bold">Student Dashboard</h1>
+              <h1 className="text-2xl font-bold">Admin Dashboard</h1>
             </Link>
           </div>
         </header>
         <div className="flex justify-between items-center mb-6 pt-3">
-          <h2 className="text-2xl font-bold">All Courses</h2>
+          <h2 className="text-2xl font-bold">Courses</h2>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="flex items-center gap-2" variant="outline">
@@ -111,14 +112,17 @@ export default function CoursesPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredCourses.length > 0 ? (
             filteredCourses.map((course: any) => (
-              <CourseCard
-                key={course.id}
-                courseId={course.id}
-                courseName={course.name}
-                courseCategory={course.category}
-                courseRating={course.rating}
-                link={`/courses/${course.id}`}
-              />
+              <div>
+                <CourseCard
+                  key={course.id}
+                  courseId={course.id}
+                  courseName={course.name}
+                  courseCategory={course.category}
+                  courseRating={course.rating}
+                  link={`/admin/course-details/${course.id}`}
+                />
+                <p>Status: {course.status}</p>
+              </div>
             ))
           ) : (
             <p className="text-center text-gray-400">No courses found.</p>
