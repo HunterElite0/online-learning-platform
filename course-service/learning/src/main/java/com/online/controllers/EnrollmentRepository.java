@@ -108,4 +108,16 @@ public class EnrollmentRepository {
     }
   }
 
+  public boolean checkIfEnrolled(long courseId, long studentId) {
+    try {
+      TypedQuery<Enrollment> query = em.createQuery(
+          "SELECT e FROM Enrollment e WHERE e.courseId = :courseId AND e.studentId = :studentId AND e.status = 'ACCEPTED'",
+          Enrollment.class).setParameter("courseId", courseId).setParameter("studentId", studentId);
+      Enrollment obj = query.getSingleResult();
+      return obj != null;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
 }

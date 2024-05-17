@@ -5,6 +5,7 @@ import java.util.List;
 import org.jose4j.jwt.JwtClaims;
 
 import com.online.controllers.CourseRepository;
+import com.online.controllers.EnrollmentRepository;
 import com.online.controllers.RatingRepository;
 import com.online.model.Rating;
 import com.online.service.JwtParser;
@@ -32,14 +33,18 @@ public class RatingApi {
   @EJB
   CourseRepository courseRepo;
 
+  @EJB
+  EnrollmentRepository enrollmentRepo;
+
   JwtParser jwtParser = new JwtParser();
 
   @POST
   @Path("/submit")
   public Response submitCourseRating(RatingRequest request) {
 
-    // System.out.println(request.getRating().toString());
-    // System.out.println(request.getJwt());
+    if (request.getRating() == null || request.getRating().getCourseId() == 0 || request.getRating().getRating() == 0) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Invalid rating").build();
+    }
 
     if (request.getJwt() == null) {
       return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -55,6 +60,11 @@ public class RatingApi {
     }
 
     long studentId = Long.parseLong(claims.getClaimValue("id").toString());
+
+    if (!enrollmentRepo.checkIfEnrolled(request.getRating().getCourseId(), studentId)) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("You must be enrolled in the course to rate it").build();
+    }
+
     request.getRating().setStudentId(studentId);
 
     if (courseRepo.findCourseById(request.getRating().getCourseId()) == null) {

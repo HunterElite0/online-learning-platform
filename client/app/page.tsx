@@ -52,7 +52,7 @@ export default function LoginForm() {
       const claims = jose.decodeJwt(result.cookie.token);
       Cookies.set(result.cookie.name, result.cookie.token);
       Cookies.set("id", claims.id);
-      Cookies.set("role", claims.role);
+      Cookies.set("role", claims.role.toLowerCase());
       // console.log(claims);
       alert("Login successful!");
 

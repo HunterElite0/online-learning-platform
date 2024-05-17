@@ -44,7 +44,7 @@ export default async function InstructorPage() {
   const accountDetails: string = await getAccountDetails(
     id as unknown as number
   );
-  if (!accountDetails) {
+  if (!accountDetails || cookieStore.get("role")?.value !== "instructor") {
     return <div>Failed to fetch account</div>;
   }
   const initials = getInitials(accountDetails);

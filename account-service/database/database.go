@@ -6,6 +6,7 @@ import (
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var DB *sql.DB
@@ -50,7 +51,12 @@ func InitDB() error {
 		log.Fatal(err.Error())
 	}
 
-	_, err = admin.Exec("admin", "admin", "admin", "admin@admin.com", "admin", "admin", 0, "admin")
+	adminPass, err := bcrypt.GenerateFromPassword([]byte("admin"), 8)
+	if err != nil {
+		return err
+	}
+
+	_, err = admin.Exec("admin", "admin", adminPass, "admin@admin.com", "admin", "admin", 0, "admin")
 	if err != nil {
 		log.Fatal(err.Error())
 	}
