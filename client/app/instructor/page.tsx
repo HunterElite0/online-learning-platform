@@ -1,14 +1,4 @@
 import Link from "next/link";
-import { AvatarFallback, Avatar } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenu,
-} from "@/components/ui/dropdown-menu";
 import { cookies } from "next/headers";
 import { UserDropdown } from "@/components/account-dropdown";
 

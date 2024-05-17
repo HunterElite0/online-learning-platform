@@ -5,10 +5,12 @@ const EnrollmentCardStud = ({
   enrollmentId,
   courseId,
   status,
+  cancel,
 }: {
   enrollmentId: number;
   courseId: number;
   status: string;
+  cancel: any;
 }) => {
   return (
     <Card>
@@ -17,6 +19,9 @@ const EnrollmentCardStud = ({
           <p>Enrollment for course: {courseId}</p>
           <p>Status: {status}</p>
         </div>
+        <Button onClick={() => cancel(enrollmentId)} className="w-30 h-10">
+          Cancel Enrollment
+        </Button>
       </div>
     </Card>
   );

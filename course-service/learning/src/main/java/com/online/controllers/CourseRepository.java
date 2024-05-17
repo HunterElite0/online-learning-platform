@@ -207,4 +207,31 @@ public class CourseRepository {
     }
   }
 
+  public int getNumAcceptedCourses() {
+    try {
+      TypedQuery<Long> query = em.createQuery("SELECT COUNT(c) FROM Course c WHERE c.status = 'ACCEPTED'", Long.class);
+      return query.getSingleResult().intValue();
+    } catch (Exception e) {
+      return -1;
+    }
+  }
+
+  public int getNumPendingCourses() {
+    try {
+      TypedQuery<Long> query = em.createQuery("SELECT COUNT(c) FROM Course c WHERE c.status = 'PENDING'", Long.class);
+      return query.getSingleResult().intValue();
+    } catch (Exception e) {
+      return -1;
+    }
+  }
+
+  public int getNumRejectedCourses() {
+    try {
+      TypedQuery<Long> query = em.createQuery("SELECT COUNT(c) FROM Course c WHERE c.status = 'REJECTED'", Long.class);
+      return query.getSingleResult().intValue();
+    } catch (Exception e) {
+      return -1;
+    }
+  }
+
 }

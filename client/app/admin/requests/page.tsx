@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 
 async function fetchPendingCourseRequests(token: string) {
   const URL = "http://localhost:8080/learning/course/pending";
-  // const URL = "http://course-service:8080/learning/course/pending";
   const response = await fetch(URL, {
     method: "GET",
     headers: {
@@ -18,14 +17,11 @@ async function fetchPendingCourseRequests(token: string) {
     const courseRequests = await response.json();
     return courseRequests;
   }
-  // console.log(response);
   return [];
 }
 
 const handleAccept = async (courseId: number) => {
   const URL = "http://localhost:8080/learning/course/accept/";
-  // const URL = "http://course-service:8080/learning/course/accept/";
-
   const jwt = require("js-cookie").get("jwt");
   const response = await fetch(URL + courseId, {
     method: "PUT",
@@ -44,8 +40,6 @@ const handleAccept = async (courseId: number) => {
 
 const handleReject = async (courseId: number) => {
   const URL = "http://localhost:8080/learning/course/reject/";
-  // const URL = "http://course-service:8080/learning/course/reject/";
-
   const jwt = require("js-cookie").get("jwt");
   const response = await fetch(URL + courseId, {
     method: "PUT",
@@ -56,7 +50,7 @@ const handleReject = async (courseId: number) => {
   });
   if (response.ok) {
     alert("Course request rejected");
-    window.location.href = "/instructor/enrollments";
+    window.location.href = "/admin/requests";
   } else {
     alert("Failed to reject course request");
   }
@@ -109,7 +103,9 @@ export default function CourseRequestsPage() {
               />
             ))
           ) : (
-            <p className="text-center text-gray-400">No Course Requests found.</p>
+            <p className="text-center text-gray-400">
+              No Course Requests found.
+            </p>
           )}
         </div>
       </section>

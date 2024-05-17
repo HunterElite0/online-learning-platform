@@ -15,5 +15,6 @@ func SetupRoutes(app *fiber.App) {
 	account.Put("/update", handler.UpdateUser)
 	account.Get("/user/:id", handler.GetUserById)
 	account.Put("/changePass", handler.ChangePassword)
-
+	account.Get("/stats", handler.AccountStats)
+	account.Delete("/delete/:id", handler.DeleteUser)
 }

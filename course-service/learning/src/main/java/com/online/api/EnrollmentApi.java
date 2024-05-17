@@ -9,10 +9,12 @@ import com.online.controllers.EnrollmentRepository;
 import com.online.controllers.NotificationRepository;
 import com.online.model.Enrollment;
 import com.online.service.JwtParser;
+import com.online.wrappers.StatWrapper;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.PUT;
@@ -38,6 +40,32 @@ public class EnrollmentApi {
   private CourseRepository courseRepo;
 
   JwtParser jwtParser = new JwtParser();
+
+  @DELETE
+  @Path("/cancel/{id}")
+  public Response cancelEnrollmentRequest(@PathParam("id") long id, @HeaderParam("jwt") String jwt) {
+
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    JwtClaims claims = jwtParser.parseClaims(jwt);
+    if (claims == null) {
+      System.out.println("Claims are null");
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("student")) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    String response = enrollmentRepo.cancelEnrollment(id, Long.parseLong(claims.getClaimValue("id").toString()));
+    if (response != null) {
+
+      return Response.ok(response).build();
+    }
+    return Response.serverError().build();
+  }
 
   @PUT
   @Path("/accept/{id}")
@@ -159,4 +187,29 @@ public class EnrollmentApi {
     }
     return Response.serverError().build();
   }
+
+  @GET
+  @Path("/stats")
+  public Response getNumAcceptedEnrollments(@HeaderParam("jwt") String jwt) {
+
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    JwtClaims claims = jwtParser.parseClaims(jwt);
+    if (claims == null) {
+      System.out.println("Claims are null");
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("admin")) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    int numAccepted = enrollmentRepo.getNumAcceptedEnrollments();
+    int numRejected = enrollmentRepo.getNumRejectedEnrollments();
+    int numPending = enrollmentRepo.getNumPendingEnrollments();
+
+    return Response.ok(new StatWrapper(numAccepted, numRejected, numPending)).build();
+  }
+
 }

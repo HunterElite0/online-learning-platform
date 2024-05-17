@@ -14,8 +14,15 @@ import { useState, useEffect } from "react";
 import { CourseCard } from "@/components/course-card";
 
 async function getAllCourses(id: number) {
-  const URL: string = "http://localhost:8080/learning/course/courses/";
-  const res = await fetch(URL);
+  const URL: string = "http://localhost:8080/learning/course/all/";
+  const cookie = require("js-cookie");
+  const res = await fetch(URL, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      jwt: cookie.get("jwt"),
+    },
+  });
   const response = await res.json();
   return response;
 }

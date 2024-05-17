@@ -22,6 +22,28 @@ async function fetchEnrollments(token: string) {
   return [];
 }
 
+async function cancelEnrollment(token: string, enrollmentId: number) {
+  const URL =
+    "http://localhost:8080/learning/enrollment/cancel/" + enrollmentId;
+  const response = await fetch(URL, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      jwt: token,
+    },
+  });
+  console.log(response);
+  if (response.ok) {
+    alert("Enrollment cancelled successfully.");
+    window.location.reload();
+  } else {
+    alert(
+      "Failed to cancel enrollment. (Cannot cancel an enrollment that is not pending.)"
+    );
+    window.location.reload();
+  }
+}
+
 export default function EnrollmentsPage() {
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -66,6 +88,7 @@ export default function EnrollmentsPage() {
                 courseId={enrollment.courseId}
                 enrollmentId={enrollment.id}
                 status={enrollment.status}
+                cancel={() => cancelEnrollment(cookies.get("jwt"), enrollment.id)}
               />
             ))
           ) : (

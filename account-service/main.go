@@ -14,7 +14,7 @@ func main() {
 	app := fiber.New()
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization, jwt",
 		AllowMethods: "GET, POST, PUT, DELETE",
 	}))
 	router.SetupRoutes(app)

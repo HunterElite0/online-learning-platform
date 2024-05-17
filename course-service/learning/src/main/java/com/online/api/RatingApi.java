@@ -17,6 +17,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -62,7 +63,8 @@ public class RatingApi {
     long studentId = Long.parseLong(claims.getClaimValue("id").toString());
 
     if (!enrollmentRepo.checkIfEnrolled(request.getRating().getCourseId(), studentId)) {
-      return Response.status(Response.Status.BAD_REQUEST).entity("You must be enrolled in the course to rate it").build();
+      return Response.status(Response.Status.BAD_REQUEST).entity("You must be enrolled in the course to rate it")
+          .build();
     }
 
     request.getRating().setStudentId(studentId);
@@ -97,7 +99,7 @@ public class RatingApi {
 
   @GET
   @Path("/course/{id}")
-  public Response getRatingsByCourseId(long id) {
+  public Response getRatingsByCourseId(@PathParam("id") long id) {
     List<Rating> ratings = ratingRepo.getRatingsByCourseId(id);
     if (ratings == null) {
       return Response.serverError().build();

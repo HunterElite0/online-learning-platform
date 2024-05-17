@@ -4,6 +4,7 @@ import com.online.controllers.CourseRepository;
 import com.online.model.Course;
 import com.online.service.JwtParser;
 import com.online.wrappers.CourseRequest;
+import com.online.wrappers.StatWrapper;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
@@ -88,9 +89,32 @@ public class CourseApi {
   @GET
   @Path("/courses")
   public Response getAllCourses() {
-    // TODO: implement after creating admin page
     List<Course> courses = repository.listAllValidCourses();
-    //List<Course> courses = repository.listAllCourses();
+    if (courses == null) {
+      return Response.serverError().build();
+    }
+    return Response.ok(courses).build();
+  }
+
+  @GET
+  @Path("/all")
+  public Response getAllCourses(@HeaderParam("jwt") String jwt) {
+
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    JwtClaims claims = jwtParser.parseClaims(jwt);
+    if (claims == null) {
+      System.out.println("Claims are null");
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("admin")) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    List<Course> courses = repository.listAllCourses();
     if (courses == null) {
       return Response.serverError().build();
     }
@@ -247,6 +271,31 @@ public class CourseApi {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
     return Response.ok(course).build();
+  }
+
+  @GET
+  @Path("/stats")
+  public Response getNumAcceptedCourses(@HeaderParam("jwt") String jwt) {
+
+    if (jwt == null) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    JwtClaims claims = jwtParser.parseClaims(jwt);
+    if (claims == null) {
+      System.out.println("Claims are null");
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    if (!claims.getClaimValue("role").toString().equalsIgnoreCase("admin")) {
+      return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    int numAccepted = repository.getNumAcceptedCourses();
+    int numRejected = repository.getNumRejectedCourses();
+    int numPending = repository.getNumPendingCourses();
+
+    return Response.ok(new StatWrapper(numAccepted, numRejected, numPending)).build();
   }
 
 }

@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { get } from "http";
+import { getRedirectError } from "next/dist/client/components/redirect";
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -69,7 +71,7 @@ async function onSubmit(data: z.infer<typeof FormSchema>) {
     course: requestBody,
     jwt: cookies.get("jwt"),
   };
-  console.log(payload);
+  // console.log(payload);
   const URL = "http://localhost:8080/learning/course/update";
   const response = await fetch(URL, {
     method: "PUT",
@@ -119,22 +121,22 @@ export default function Component({ params }: { params: { id: number } }) {
         console.error(error);
         alert("Failed to load course details.");
       }
-      async function getReviews() {
-        try {
-          const fetchedReviews = await getCourseReviews(params.id);
-          setReviews(fetchedReviews);
-        } catch (error) {
-          console.error(error);
-          alert("Failed to load course reviews.");
-        }
+    }
+    async function getReviews() {
+      try {
+        const fetchedReviews = await getCourseReviews(params.id);
+        setReviews(fetchedReviews);
+      } catch (error) {
+        console.error(error);
+        alert("Failed to load course reviews.");
       }
     }
-
     const cookies = require("js-cookie");
     if (cookies.get("role") !== "admin") {
       window.location.href = "/";
     } else {
       getCourse();
+      getReviews();
     }
   }, [params.id]);
 
@@ -295,8 +297,11 @@ export default function Component({ params }: { params: { id: number } }) {
                   <li className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div>
-                        <p className="font-medium">{review.name}</p>
-                        <p className="text-gray-400">{review.rating}</p>
+                        <p className="font-medium">
+                          From Student ID: {review.studentId}
+                        </p>
+                        <p className="font-medium">Comment: {review.review}</p>
+                        <p className="text-gray-400">{review.rating}/5</p>
                       </div>
                     </div>
                   </li>

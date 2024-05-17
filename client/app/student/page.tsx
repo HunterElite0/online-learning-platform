@@ -3,8 +3,8 @@ import { cookies } from "next/headers";
 import { UserDropdown } from "@/components/account-dropdown";
 
 async function getAccountDetails(id: number) {
-  // const URL : string = "http://account-service:8081/account/user/" + id;
-  const URL: string = "http://localhost:8081/account/user/" + id;
+  const URL : string = "http://account-service:8081/account/user/" + id;
+  // const URL: string = "http://localhost:8081/account/user/" + id;
   try {
     const res = await fetch(URL);
     const response = await res.json();

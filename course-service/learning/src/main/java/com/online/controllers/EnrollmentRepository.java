@@ -120,4 +120,50 @@ public class EnrollmentRepository {
     }
   }
 
+  public int getNumAcceptedEnrollments() {
+    try {
+      TypedQuery<Enrollment> query = em.createQuery(
+          "SELECT e FROM Enrollment e WHERE e.status = 'ACCEPTED'", Enrollment.class);
+      return query.getResultList().size();
+    } catch (Exception e) {
+      return -1;
+    }
+  }
+
+  public int getNumPendingEnrollments() {
+    try {
+      TypedQuery<Enrollment> query = em.createQuery(
+          "SELECT e FROM Enrollment e WHERE e.status = 'PENDING'", Enrollment.class);
+      return query.getResultList().size();
+    } catch (Exception e) {
+      return -1;
+    }
+  }
+
+  public int getNumRejectedEnrollments() {
+    try {
+      TypedQuery<Enrollment> query = em.createQuery(
+          "SELECT e FROM Enrollment e WHERE e.status = 'REJECTED'", Enrollment.class);
+      return query.getResultList().size();
+    } catch (Exception e) {
+      return -1;
+    }
+  }
+
+  public String cancelEnrollment(long courseId, long studentId) {
+    try {
+      TypedQuery<Enrollment> query = em.createQuery(
+          "SELECT e FROM Enrollment e WHERE e.courseId = :courseId AND e.studentId = :studentId AND e.status = 'PENDING'",
+          Enrollment.class).setParameter("courseId", courseId).setParameter("studentId", studentId);
+      Enrollment obj = query.getSingleResult();
+      if (obj != null) {
+        em.remove(obj);
+        return "Enrollment cancelled successfuly!";
+      }
+      return "Enrollment not found!";
+    } catch (Exception e) {
+      return "Enrollment not found!";
+    }
+  }
+
 }

@@ -3,17 +3,64 @@ import { UserDropdown } from "@/components/account-dropdown";
 import { cookies } from "next/headers";
 
 async function getAccountDetails(id: number) {
-  // const URL : string = "http://account-service:8081/account/user/" + id;
-  const URL: string = "http://localhost:8081/account/user/" + id;
+  const URL : string = "http://account-service:8081/account/user/" + id;
+  // const URL: string = "http://localhost:8081/account/user/" + id;
   try {
     const res = await fetch(URL);
     const response = await res.json();
     const accountDetails: any = response;
-    // console.log(accountDetails);
     return accountDetails.name;
   } catch (error) {
     return null;
   }
+}
+
+async function fetchAccountStats() {
+  const URL : string = "http://account-service:8081/account/stats";
+  // const URL: string = "http://localhost:8081/account/stats";
+  try {
+    const res = await fetch(URL, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        jwt: cookies().get("jwt")?.value as string,
+      },
+    });
+    const response = await res.json();
+    const stats: any = response;
+    return stats;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function fetchCourseStats() {
+  const URL : string = "http://course-service:8080/learning/course/stats";
+  // const URL: string = "http://localhost:8080/learning/course/stats";
+
+  const res = await fetch(URL, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      jwt: cookies().get("jwt")?.value as string,
+    },
+  });
+  const response = await res.json();
+  return response;
+}
+
+async function fetchEnrollmentStats() {
+  const URL : string = "http://course-service:8080/learning/enrollment/stats";
+  // const URL: string = "http://localhost:8080/learning/enrollment/stats";
+  const res = await fetch(URL, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      jwt: cookies().get("jwt")?.value as string,
+    },
+  });
+  const response = await res.json();
+  return response;
 }
 
 function getInitials(name: string) {
@@ -38,6 +85,9 @@ export default async function AdminPage() {
     return <div>Failed to fetch account</div>;
   }
   const initials = getInitials(accountDetails);
+  const accountStats = await fetchAccountStats();
+  const courseStats = await fetchCourseStats();
+  const enrollmentStats = await fetchEnrollmentStats();
   return (
     <main key="1" className="flex flex-col min-h-screen bg-gray-950 text-white">
       <header className="py-4 px-6">
@@ -77,48 +127,83 @@ export default async function AdminPage() {
       </section>
       <section className="container mx-auto py-8 px-4 md:px-6 lg:px-8 flex-1 grid grid-cols-1 lg:grid-cols-1 gap-8">
         <div className="bg-gray-800 shadow-md rounded-lg p-6 flex flex-col gap-4 mx-auto w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
-          <UsersIcon className="h-8 w-8 mb-2 text-gray-50" />
-          <h3 className="text-xl font-bold text-gray-50">Students</h3>
-          <p className="text-4xl font-bold text-gray-50">1,234</p>
-        </div>
-        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
-          <SchoolIcon className="h-8 w-8 mb-2 text-gray-50" />
-          <h3 className="text-xl font-bold text-gray-50">Instructors</h3>
-          <p className="text-4xl font-bold text-gray-50">78</p>
-        </div>
-        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
-          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
-          <h3 className="text-xl font-bold text-gray-50">Courses</h3>
-          <p className="text-4xl font-bold text-gray-50">45</p>
-        </div>
-        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
-          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
-          <h3 className="text-xl font-bold text-gray-50">Admins</h3>
-          <p className="text-4xl font-bold text-gray-50">1</p>
-        </div>
-        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
-          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
-          <h3 className="text-xl font-bold text-gray-50">Accepted Courses</h3>
-          <p className="text-4xl font-bold text-gray-50">1</p>
-        </div>
-        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
-          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
-          <h3 className="text-xl font-bold text-gray-50">Rejected Courses</h3>
-          <p className="text-4xl font-bold text-gray-50">1</p>
-        </div>
-        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
-          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
-          <h3 className="text-xl font-bold text-gray-50">Pending Courses</h3>
-          <p className="text-4xl font-bold text-gray-50">0</p>
-        </div>
-        <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
-          <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
-          <h3 className="text-xl font-bold text-gray-50">Courses</h3>
-          <p className="text-4xl font-bold text-gray-50">45</p>
-        </div>
-      </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+              <UsersIcon className="h-8 w-8 mb-2 text-gray-50" />
+              <h3 className="text-xl font-bold text-gray-50">Students</h3>
+              <p className="text-4xl font-bold text-gray-50">
+                {accountStats.students}
+              </p>
+            </div>
+            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+              <SchoolIcon className="h-8 w-8 mb-2 text-gray-50" />
+              <h3 className="text-xl font-bold text-gray-50">Instructors</h3>
+              <p className="text-4xl font-bold text-gray-50">
+                {accountStats.instructors}
+              </p>
+            </div>
+            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+              <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+              <h3 className="text-xl font-bold text-gray-50">Admins</h3>
+              <p className="text-4xl font-bold text-gray-50">
+                {accountStats.admins}
+              </p>
+            </div>
+            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+              <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+              <h3 className="text-xl font-bold text-gray-50">
+                Accepted Courses
+              </h3>
+              <p className="text-4xl font-bold text-gray-50">
+                {courseStats.accepted}
+              </p>
+            </div>
+            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+              <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+              <h3 className="text-xl font-bold text-gray-50">
+                Rejected Courses
+              </h3>
+              <p className="text-4xl font-bold text-gray-50">
+                {courseStats.rejected}
+              </p>
+            </div>
+            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+              <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+              <h3 className="text-xl font-bold text-gray-50">
+                Pending Courses
+              </h3>
+              <p className="text-4xl font-bold text-gray-50">
+                {courseStats.pending}
+              </p>
+            </div>
+            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+              <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+              <h3 className="text-xl font-bold text-gray-50">
+                Accepted Enrollments
+              </h3>
+              <p className="text-4xl font-bold text-gray-50">
+                {enrollmentStats.accepted}
+              </p>
+            </div>
+            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+              <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+              <h3 className="text-xl font-bold text-gray-50">
+                Rejected Enrollments
+              </h3>
+              <p className="text-4xl font-bold text-gray-50">
+                {enrollmentStats.rejected}
+              </p>
+            </div>
+            <div className="bg-gray-700 rounded-lg p-4 flex flex-col items-center justify-center">
+              <BookIcon className="h-8 w-8 mb-2 text-gray-50" />
+              <h3 className="text-xl font-bold text-gray-50">
+                Pending Enrollments
+              </h3>
+              <p className="text-4xl font-bold text-gray-50">
+                {enrollmentStats.pending}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -210,23 +295,3 @@ function UsersIcon(props: any) {
   );
 }
 
-function BarChartIcon(props : any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="12" x2="12" y1="20" y2="10" />
-      <line x1="18" x2="18" y1="20" y2="4" />
-      <line x1="6" x2="6" y1="20" y2="16" />
-    </svg>
-  )
-}

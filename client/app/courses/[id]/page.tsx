@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 
 async function getCourseDetails(id: number) {
   const URL = "http://localhost:8080/learning/course/" + id;
-  // const URL = "http://course-service:8080/learning/courses/" + id;
   const response = await fetch(URL, {
     method: "GET",
     headers: {
