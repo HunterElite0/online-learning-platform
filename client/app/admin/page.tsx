@@ -1,8 +1,3 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/4ag7NbWL528
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
 import Link from "next/link";
 import { UserDropdown } from "@/components/account-dropdown";
 import { cookies } from "next/headers";
@@ -51,7 +46,7 @@ export default async function AdminPage() {
           <UserDropdown initials={initials} accountDetails={accountDetails} />
         </div>
       </header>
-      <section className="container mx-auto py-8 px-4 md:px-6 lg:px-8 flex-1 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <section className="container mx-auto py-4 px-4 md:px-6 lg:px-8 flex-1 grid grid-cols-1 lg:grid-cols-3 gap-8">
         <Link
           className="bg-gray-800 shadow-md rounded-lg p-4 flex flex-col gap-4 hover:bg-gray-700 transition-colors"
           href="/admin/accounts"
